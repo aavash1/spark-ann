@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -16,10 +17,10 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Aavash/Desktop/MESSIF.jar" sourcepath="/messif"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
 	<classpathentry kind="lib" path="C:/javafx-sdk-19/lib/javafx.base.jar"/>
 	<classpathentry kind="lib" path="C:/javafx-sdk-19/lib/javafx.controls.jar"/>
 	<classpathentry kind="lib" path="C:/javafx-sdk-19/lib/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="MESSIF.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
