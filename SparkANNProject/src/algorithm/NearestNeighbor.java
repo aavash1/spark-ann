@@ -1,5 +1,6 @@
 package algorithm;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +21,7 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import framework.*;
 
-public class NearestNeighbor {
+public class NearestNeighbor implements Serializable {
 
 	
 	private CoreGraph m_graph;

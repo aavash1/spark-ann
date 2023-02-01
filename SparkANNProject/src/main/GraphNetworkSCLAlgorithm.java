@@ -52,6 +52,8 @@ import scala.reflect.ClassTag;
 
 public class GraphNetworkSCLAlgorithm {
 
+	private static Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer, Integer>();
+
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
@@ -156,6 +158,7 @@ public class GraphNetworkSCLAlgorithm {
 		 */
 		ArrayList<Integer> graphPartitionIndex = new ArrayList<Integer>();
 		graphPartitionIndex = UtilitiesMgmt.readMETISPartition(metisPartitionOutputFile, graphPartitionIndex);
+		// Map<Integer, Integer> partitionMap = new HashMap<Integer, Integer>();
 
 		int[] partitionIndexKey = new int[graphPartitionIndex.size()];
 		for (int i = 0; i < cGraph.getAdjancencyMap().size(); i++) {
@@ -164,9 +167,18 @@ public class GraphNetworkSCLAlgorithm {
 
 		}
 
+		/**
+		 * This vertexPartitionIndex holds the generic type of IntegerId and It's
+		 * respective partiton value
+		 * 
+		 */
 		Map<Object, Object> vertexIdPartitionIndex = new HashMap<Object, Object>();
+		// Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer,
+		// Integer>();
 		for (int i = 0; i < graphPartitionIndex.size(); i++) {
+			// System.out.println(i + " " + Long.valueOf(graphPartitionIndex.get(i)));
 			vertexIdPartitionIndex.put(partitionIndexKey[i], Long.valueOf(graphPartitionIndex.get(i)));
+			vertexIdPartitionIndexMap.put(i, graphPartitionIndex.get(i));
 		}
 
 		// Depending upon the size of cluster, CustomPartitionSize can be changed
@@ -762,10 +774,17 @@ public class GraphNetworkSCLAlgorithm {
 		bst.storeArray(arrayOfBorderNodes);
 
 		PriorityQueue<cEdge> pq = new PriorityQueue<cEdge>();
-		ArrayList<Integer> visited = new ArrayList<>();
-		
-		
-		
+
+		boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
+
+		for (Integer vertex : cGraph.getAdjNodeIds(nodeId)) {
+			if ((vertexIdPartitionIndexMap.get(nodeId) == vertexIdPartitionIndexMap.get(vertex))) {
+				
+
+			} else if ((vertexIdPartitionIndexMap.get(nodeId) != vertexIdPartitionIndexMap.get(vertex))) {
+
+			}
+		}
 
 	}
 

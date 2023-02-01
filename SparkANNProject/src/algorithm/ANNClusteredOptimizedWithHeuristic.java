@@ -1,6 +1,6 @@
 package algorithm;
 
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,7 +9,7 @@ import java.util.Map;
 //import org.apache.commons.math3.analysis.function.Max;
 import framework.*;
 
-public class ANNClusteredOptimizedWithHeuristic {
+public class ANNClusteredOptimizedWithHeuristic implements Serializable {
 
 	CoreGraph m_graph;
 
@@ -482,7 +482,7 @@ public class ANNClusteredOptimizedWithHeuristic {
 	public void computeWithTimeAndHeuristic(CoreGraph gr, boolean queryObjectType) {
 
 		// System.out.println();
-		//System.out.println("Clustered ANN is Heuristic is running ... ");
+		// System.out.println("Clustered ANN is Heuristic is running ... ");
 //		System.out.println("Number of edges containing objs: " + gr.getObjectsOnEdges().size() + "/"
 //				+ gr.getEdgesWithInfo().size());
 		m_graph = gr;
@@ -493,7 +493,7 @@ public class ANNClusteredOptimizedWithHeuristic {
 		m_nodeIdClusters = clusteringNodes.cluster(gr);
 		// System.out.println("Number of terminal nodes: " +
 		// clusteringNodes.getNumOfTerminalNodes());
-		//long startTimeNaive = System.nanoTime(); //
+		// long startTimeNaive = System.nanoTime(); //
 		m_objectIdClusters = clusteringObjects.clusterWithIndex4(gr, m_nodeIdClusters, queryObjectType);
 		sizeOfNodeClusters = m_nodeIdClusters.size();
 		sizeOfObjectClusters = m_objectIdClusters.size();
@@ -857,11 +857,12 @@ public class ANNClusteredOptimizedWithHeuristic {
 				}
 			}
 		}
-	//	long graphLoadingTimeNaive = System.nanoTime() - startTimeNaive; //
-	//	double graphLoadingTimeDNaive = (double) graphLoadingTimeNaive / 1000000000.0;
-	//	System.out.println("Total Query Computed: " + queriedObjCounter);
-	//	System.out.println(" ");
-	//	return graphLoadingTimeDNaive;
+		// long graphLoadingTimeNaive = System.nanoTime() - startTimeNaive; //
+		// double graphLoadingTimeDNaive = (double) graphLoadingTimeNaive /
+		// 1000000000.0;
+		// System.out.println("Total Query Computed: " + queriedObjCounter);
+		// System.out.println(" ");
+		// return graphLoadingTimeDNaive;
 
 	}
 

@@ -1,5 +1,6 @@
 package algorithm;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import com.github.davidmoten.rtree.RTree;
@@ -10,7 +11,7 @@ import com.github.davidmoten.rtree.geometry.Point;
 import framework.CoreGraph;
 import framework.Node;
 
-public class RTreeIndexer {
+public class RTreeIndexer implements Serializable {
 
 	public static RTree<Integer, Line> createRTree(CoreGraph graph) {
 		RTree<Integer, Line> rtree = RTree.create();

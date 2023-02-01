@@ -1,7 +1,6 @@
 package algorithm;
 
-
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +11,8 @@ import org.apache.commons.collections4.multimap.HashSetValuedHashMap;
 
 import framework.*;
 
-public class ANNNaive {
+public class ANNNaive implements Serializable {
 
-	
 	private CoreGraph m_graph;
 
 	// m_nearestNeighborSets: Map<QueryObjectId, DataObjectId>.

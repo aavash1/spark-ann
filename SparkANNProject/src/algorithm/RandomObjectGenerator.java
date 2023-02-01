@@ -1,11 +1,11 @@
 package algorithm;
 
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -36,13 +36,11 @@ import java.util.Map.Entry;
 
 //import com.google.common.collect.MinMaxPriorityQueue;
 
-
-
 import framework.*;
 
 //import testing.RandomGaussian;
 
-public class RandomObjectGenerator {
+public class RandomObjectGenerator implements Serializable {
 
 	// not complete yet
 	// Object Type: false = data object ; true = query object;
@@ -78,8 +76,8 @@ public class RandomObjectGenerator {
 		int totalNumberOfObjects = totalNumberOfFalseObjects + totalNumberOfTrueObjects;
 		Map<Integer, ArrayList<Double>> acceptedDistancesOnEdge = new HashMap<Integer, ArrayList<Double>>();
 		int randomEdgeId;
-		//int centroidObjectSize = totalNumberOfObjects;
-		//double standardDeviation = 0.0;
+		// int centroidObjectSize = totalNumberOfObjects;
+		// double standardDeviation = 0.0;
 
 		ArrayList<Integer> centroidEdgeIds = new ArrayList<Integer>();
 		// centroidEdgeBrances will hold all the edges that traverses through first 10
@@ -569,7 +567,7 @@ public class RandomObjectGenerator {
 			}
 			double edgeLength = graph.getEdgeDistance(randomEdgeId);
 			double distFromStartNode = getRandDoubleBetRange2(0, edgeLength);
-			
+
 			if (!acceptedDistancesOnEdge.get(randomEdgeId).contains(distFromStartNode)) {
 				object.setDistanceFromStartNode(distFromStartNode);
 			} else {
@@ -581,8 +579,8 @@ public class RandomObjectGenerator {
 				testVar = boolValues.poll();
 				object.setType(testVar);
 			}
-			//double rating=getRandDoubleBetRange2(1, 10);
-			//object.setRating(rating);
+			// double rating=getRandDoubleBetRange2(1, 10);
+			// object.setRating(rating);
 			if (graph.addObjectOnEdge(randomEdgeId, object)) {
 				objCounter++;
 				acceptedDistancesOnEdge.get(randomEdgeId).add(distFromStartNode);
@@ -710,8 +708,8 @@ public class RandomObjectGenerator {
 
 				if (acceptedDistancesOnEdge.get(edge.getEdgeId()).isEmpty()) {
 
-					//distanceFromStartNode = getRandDoubleBetRange5(0, edgeLength);
-					distanceFromStartNode =0.0;
+					// distanceFromStartNode = getRandDoubleBetRange5(0, edgeLength);
+					distanceFromStartNode = 0.0;
 					checkedRandomDistances.get(edge.getEdgeId()).add(distanceFromStartNode);
 					// randObj.setDistanceFromStartNode(distanceFromStartNode);
 					// acceptedDistancesOnEdge.get(edge.getEdgeId()).add(distanceFromStartNode);
@@ -720,10 +718,10 @@ public class RandomObjectGenerator {
 					// isThereDistanceConflict = false;
 
 				} else {
-					//int conflictCounter = 0;
+					// int conflictCounter = 0;
 					while (!isAcceptableDistance) {
 
-						//distanceFromStartNode = getRandDoubleBetRange5(0, edgeLength);
+						// distanceFromStartNode = getRandDoubleBetRange5(0, edgeLength);
 						distanceFromStartNode = getRandDoubleBetRange(0, edgeLength);
 						if (checkedRandomDistances.get(edge.getEdgeId()).contains(distanceFromStartNode)) {
 							continue;
@@ -744,7 +742,7 @@ public class RandomObjectGenerator {
 								break;
 							}
 
-						//	conflictCounter++;
+							// conflictCounter++;
 							// System.out.println("conflictCounter: " + conflictCounter + ", distandFromSN:
 							// " + distanceFromStartNode + ", edgeLength: " + edgeLength);
 
@@ -1154,9 +1152,9 @@ public class RandomObjectGenerator {
 
 		// printGeneratorPara"meters();
 		// i - edge
-		//int edgeCounter = 0;
+		// int edgeCounter = 0;
 		for (Integer keyEdgeId : mapOfEdgeObjectNumber.keySet()) {
-		//	edgeCounter++;
+			// edgeCounter++;
 			// System.out.println("Finished Generating on: " + edgeCounter + " out of " +
 			// mapOfEdgeObjectNumber.size());
 			ArrayList<Double> checkedRandomDistances = new ArrayList<Double>();
@@ -1815,12 +1813,12 @@ public class RandomObjectGenerator {
 		int totalNumberOfNodes = graph.getNodesWithInfo().size();
 		boolean foundCentroidNodeId = false;
 
-		//initially was negative 1
-		//changed to 1 for test purpose
+		// initially was negative 1
+		// changed to 1 for test purpose
 		int selectedRandomNode = 1;
 		while (!foundCentroidNodeId) {
 			selectedRandomNode = (int) getThreadRandomNumberInBetween(1, totalNumberOfNodes - 1);
-			//System.out.println("selected Random node: " + selectedRandomNode);
+			// System.out.println("selected Random node: " + selectedRandomNode);
 
 			if (centroidNodeIds.isEmpty() || !centroidNodeIds.contains(selectedRandomNode)) {
 				foundCentroidNodeId = true;
@@ -1861,8 +1859,8 @@ public class RandomObjectGenerator {
 					continue;
 				}
 			}
-			//double rating=getRandDoubleBetRange2(1, 10);
-			//roadObj.setRating(rating);
+			// double rating=getRandDoubleBetRange2(1, 10);
+			// roadObj.setRating(rating);
 
 			if (graph.addObjectOnEdge(edgeId, roadObj)) {
 				objectCounter++;
@@ -1989,9 +1987,9 @@ public class RandomObjectGenerator {
 				testVar = boolValues.poll();
 				object.setType(testVar);
 			}
-			//double rating=getRandDoubleBetRange2(1, 10);
-			//object.setRating(rating);
-			
+			// double rating=getRandDoubleBetRange2(1, 10);
+			// object.setRating(rating);
+
 			if (graph.addObjectOnEdge(randomEdgeId, object)) {
 				objectCounter++;
 				acceptedDistancesOnEdge.get(randomEdgeId).add(distFromStartNode);
@@ -2037,7 +2035,6 @@ public class RandomObjectGenerator {
 		}
 
 	}
-	
 
 	public static void zgenerateCCDistribution(CoreGraph graph, double standardDeviationValue, int scaleFactor,
 			int numberOfTrueObject, int numberOfFalseObject) {
