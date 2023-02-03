@@ -3,12 +3,15 @@ package main;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -53,6 +56,7 @@ import scala.reflect.ClassTag;
 public class GraphNetworkSCLAlgorithm {
 
 	private static Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer, Integer>();
+	private static Map<Integer, ArrayList<holder>> DARTTableMap = new HashMap<>();
 
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -305,15 +309,15 @@ public class GraphNetworkSCLAlgorithm {
 		// int size = rtree.size();
 		// System.out.println("Number of entries in RTree: " + size);
 
-		// Index the border nodes with binary search tree to prune the traversal.
-		BinarySearchTree bst = new BinarySearchTree();
-		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
-
-		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-			arrayOfBorderNodes[i] = Integer.parseInt(boundaryVerticesList.get(i));
-		}
-
-		bst.storeArray(arrayOfBorderNodes);
+//		// Index the border nodes with binary search tree to prune the traversal.
+//		BinarySearchTree bst = new BinarySearchTree();
+//		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
+//
+//		for (int i = 0; i < boundaryVerticesList.size(); i++) {
+//			arrayOfBorderNodes[i] = Integer.parseInt(boundaryVerticesList.get(i));
+//		}
+//
+//		bst.storeArray(arrayOfBorderNodes);
 
 		/**
 		 * Load Spark Necessary Items
@@ -752,40 +756,188 @@ public class GraphNetworkSCLAlgorithm {
 
 	}
 
+	/*
+	 * 
+	 * public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph,
+	 * ArrayList<String> boundaryVerticesList) {
+	 * 
+	 * Initially create a Binary search tree to index the boundaryVertices Take the
+	 * nodeId and run the traversal: check if the adjacent node is in the BST or not
+	 * If not check the edgeId with two nodes, check if there is any data object or
+	 * not If yes create a holder class and add the details and add it as arraylist
+	 * 
+	 * 
+	 * 
+	 * Map<Integer, ArrayList<holder>> result = new HashMap<Integer,
+	 * ArrayList<holder>>();
+	 * 
+	 * List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
+	 * ArrayList<holder> NNLists = new ArrayList<>();
+	 * 
+	 * String towardsAnotherBorder = "tb"; String towardsNonBorder = "ntb";
+	 * 
+	 * int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()]; Set<Integer>
+	 * boundaryVertices = new HashSet<>();
+	 * 
+	 * for (int i = 0; i < boundaryVerticesList.size(); i++) { int vertex =
+	 * Integer.parseInt(boundaryVerticesList.get(i)); arrayOfBorderNodes[i] =
+	 * vertex; boundaryVertices.add(vertex); }
+	 * 
+	 * PriorityQueue<NodeDistance> pq = new PriorityQueue<NodeDistance>();
+	 * 
+	 * boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
+	 * pq.offer(new NodeDistance(nodeId, 0.0)); // pq.add(nodeId); // set the
+	 * distace as 0 // double nearestDistance = 0.0;
+	 * 
+	 * visited[nodeId] = true;
+	 * 
+	 * while (!pq.isEmpty()) { NodeDistance currentNode = pq.poll();
+	 * 
+	 * for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.nodeId)) { if
+	 * (!visited[adjacentNodes]) { visited[adjacentNodes] = true; double distance =
+	 * currentNode.distance; int edgeId = cGraph.getEdgeId(currentNode.nodeId,
+	 * adjacentNodes); List<RoadObject> objects =
+	 * cGraph.getObjectsOnEdges().get(edgeId);
+	 * 
+	 * if (objects != null) { for (RoadObject rObj : objects) { if (rObj.getType()
+	 * == false) { distance += rObj.getDistanceFromStartNode(); // nnList.add(new
+	 * Tuple3<>(towardsNonBorder, rObj.getObjectId(), distance)); holder hold = new
+	 * holder(rObj.getObjectId(), towardsNonBorder, distance); NNLists.add(hold);
+	 * DARTTableMap.put(currentNode.nodeId, NNLists); } else { distance +=
+	 * cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes); } } } else {
+	 * distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes); }
+	 * 
+	 * if (boundaryVertices.contains(adjacentNodes)) { nnList.add(new
+	 * Tuple3<>(towardsAnotherBorder, adjacentNodes, distance)); //holder hold = new
+	 * holder(rObj.getObjectId(), towardsAnotherBorder, distance);
+	 * NNLists.add(hold); DARTTableMap.put(currentNode.nodeId, NNLists); } else {
+	 * pq.offer(new NodeDistance(adjacentNodes, distance)); } } } }
+	 * 
+	 * // while (pq.size() != 0) { // nodeId = pq.poll(); // // // Get all adjacent
+	 * vertices of the dequeued // // vertex If a adjacent has not been visited, //
+	 * // then mark it visited and enqueue it // // Iterator<Integer> i =
+	 * cGraph.getAdjNodeIds(nodeId).listIterator(); // while (i.hasNext()) { // int
+	 * adjacentNode = i.next(); // // if (!visited[adjacentNode]) { // // you get
+	 * the nodes, now check if the node is in the border node or not // if
+	 * ((vertexIdPartitionIndexMap.get(nodeId) ==
+	 * vertexIdPartitionIndexMap.get(adjacentNode))) { // // check if the edge has
+	 * any data object in it or not. // //
+	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode)); //
+	 * for (RoadObject rObj :
+	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode))) { //
+	 * if (rObj.getType() != true) { // nearestDistance = nearestDistance +
+	 * rObj.getDistanceFromStartNode(); // // nnList.add(new Tuple3<String, Integer,
+	 * Double>(towardsNonBorder, rObj.getObjectId(), // nearestDistance)); // // }
+	 * // if there is no data object then simply add the edge // else //
+	 * nearestDistance = nearestDistance + cGraph.getEdgeDistance(nodeId,
+	 * adjacentNode); // continue; // } // // } else if
+	 * ((vertexIdPartitionIndexMap.get(nodeId) !=
+	 * vertexIdPartitionIndexMap.get(adjacentNode))) { // //
+	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode)); //
+	 * for (RoadObject rObj :
+	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode))) { //
+	 * if (rObj.getType() != true) { // nearestDistance = nearestDistance +
+	 * rObj.getDistanceFromStartNode(); // // nnList.add(new Tuple3<String, Integer,
+	 * Double>(towardsAnotherBorder, rObj.getObjectId(), // nearestDistance)); // //
+	 * } else // nearestDistance = nearestDistance + cGraph.getEdgeDistance(nodeId,
+	 * adjacentNode); // continue; // } // // } // visited[adjacentNode] = true; //
+	 * pq.add(adjacentNode); // } // // } // }
+	 * 
+	 * }
+	 */
+
 	public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph, ArrayList<String> boundaryVerticesList) {
-		/**
-		 * Initially create a Binary search tree to index the boundaryVertices Take the
-		 * nodeId and run the traversal: check if the adjacent node is in the BST or not
-		 * If not check the edgeId with two nodes, check if there is any data object or
-		 * not If yes create a holder class and add the details and add it as arraylist
-		 * 
-		 */
+
+		List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
+		ArrayList<holder> NNLists = new ArrayList<>();
 
 		String towardsAnotherBorder = "tb";
 		String towardsNonBorder = "ntb";
 
-		BinarySearchTree bst = new BinarySearchTree();
 		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
+		Set<Integer> boundaryVertices = new HashSet<>();
 
 		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-			arrayOfBorderNodes[i] = Integer.parseInt(boundaryVerticesList.get(i));
+			int vertex = Integer.parseInt(boundaryVerticesList.get(i));
+			arrayOfBorderNodes[i] = vertex;
+			boundaryVertices.add(vertex);
 		}
 
-		bst.storeArray(arrayOfBorderNodes);
-
-		PriorityQueue<cEdge> pq = new PriorityQueue<cEdge>();
-
+		PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
 		boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
+		pq.offer(new NodeDistance(nodeId, 0.0));
+		visited[nodeId] = true;
 
-		for (Integer vertex : cGraph.getAdjNodeIds(nodeId)) {
-			if ((vertexIdPartitionIndexMap.get(nodeId) == vertexIdPartitionIndexMap.get(vertex))) {
-				
+		while (!pq.isEmpty()) {
+			NodeDistance currentNode = pq.poll();
 
-			} else if ((vertexIdPartitionIndexMap.get(nodeId) != vertexIdPartitionIndexMap.get(vertex))) {
+			for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.nodeId)) {
+				if (!visited[adjacentNodes]) {
+					visited[adjacentNodes] = true;
+					double distance = currentNode.distance;
+					int edgeId = cGraph.getEdgeId(currentNode.nodeId, adjacentNodes);
+					List<RoadObject> objects = cGraph.getObjectsOnEdges().get(edgeId);
 
+					if (objects != null) {
+						for (RoadObject rObj : objects) {
+							if (rObj.getType() == false) {
+								distance += rObj.getDistanceFromStartNode();
+
+								if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap
+										.get(adjacentNodes)) {
+									holder hold = new holder(rObj.getObjectId(), towardsNonBorder, distance);
+									NNLists.add(hold);
+									DARTTableMap.put(currentNode.nodeId, NNLists);
+								} else if (vertexIdPartitionIndexMap.get(currentNode) != vertexIdPartitionIndexMap
+										.get(adjacentNodes)) {
+
+									holder hold = new holder(rObj.getObjectId(), towardsAnotherBorder, distance);
+									NNLists.add(hold);
+									DARTTableMap.put(currentNode.nodeId, NNLists);
+								}
+
+								if (NNLists.size() == 2) {
+									break;
+								}
+
+							} else {
+								distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
+							}
+						}
+						if (NNLists.size() == 2) {
+							break;
+						}
+					} else {
+						distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
+					}
+
+//					if (boundaryVertices.contains(adjacentNodes)) {
+//						nnList.add(new Tuple3<>(towardsAnotherBorder, adjacentNodes, distance));
+//						holder hold = new holder(adjacentNodes, towardsAnotherBorder, distance);
+//						NNLists.add(hold);
+//						DARTTableMap.put(currentNode.nodeId, NNLists);
+//						if (NNLists.size() == 2)
+//							break;
+//					}
+				}
 			}
 		}
+	}
 
+//To compare the Distances
+	static class NodeDistance implements Comparable<NodeDistance> {
+		int nodeId;
+		double distance;
+
+		public NodeDistance(int nodeId, double distance) {
+			this.nodeId = nodeId;
+			this.distance = distance;
+		}
+
+		@Override
+		public int compareTo(NodeDistance o) {
+			return Double.compare(distance, o.distance);
+		}
 	}
 
 	static class holder implements Serializable {
