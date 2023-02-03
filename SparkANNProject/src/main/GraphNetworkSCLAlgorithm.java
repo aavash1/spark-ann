@@ -319,6 +319,13 @@ public class GraphNetworkSCLAlgorithm {
 //
 //		bst.storeArray(arrayOfBorderNodes);
 
+		for (int i = 0; i < boundaryVerticesList.size(); i++) {
+			int nodeId = Integer.parseInt(boundaryVerticesList.get(i));
+			findNNForEmbeddedGraph(nodeId, cGraph);
+		}
+
+		System.out.println("DartTable: " + DARTTableMap.toString());
+
 		/**
 		 * Load Spark Necessary Items
 		 */
@@ -846,7 +853,7 @@ public class GraphNetworkSCLAlgorithm {
 	 * }
 	 */
 
-	public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph, ArrayList<String> boundaryVerticesList) {
+	public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph) {
 
 		List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
 		ArrayList<holder> NNLists = new ArrayList<>();
@@ -854,14 +861,14 @@ public class GraphNetworkSCLAlgorithm {
 		String towardsAnotherBorder = "tb";
 		String towardsNonBorder = "ntb";
 
-		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
-		Set<Integer> boundaryVertices = new HashSet<>();
-
-		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-			int vertex = Integer.parseInt(boundaryVerticesList.get(i));
-			arrayOfBorderNodes[i] = vertex;
-			boundaryVertices.add(vertex);
-		}
+//		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
+//		Set<Integer> boundaryVertices = new HashSet<>();
+//
+//		for (int i = 0; i < boundaryVerticesList.size(); i++) {
+//			int vertex = Integer.parseInt(boundaryVerticesList.get(i));
+//			arrayOfBorderNodes[i] = vertex;
+//			boundaryVertices.add(vertex);
+//		}
 
 		PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
 		boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
