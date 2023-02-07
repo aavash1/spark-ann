@@ -55,9 +55,6 @@ import scala.reflect.ClassTag;
 
 public class GraphNetworkSCLAlgorithm {
 
-	private static Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer, Integer>();
-	private static Map<Integer, ArrayList<holder>> DARTTableMap = new HashMap<>();
-
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
@@ -177,12 +174,14 @@ public class GraphNetworkSCLAlgorithm {
 		 * 
 		 */
 		Map<Object, Object> vertexIdPartitionIndex = new HashMap<Object, Object>();
+		Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer, Integer>();
+
 		// Map<Integer, Integer> vertexIdPartitionIndexMap = new HashMap<Integer,
 		// Integer>();
 		for (int i = 0; i < graphPartitionIndex.size(); i++) {
 			// System.out.println(i + " " + Long.valueOf(graphPartitionIndex.get(i)));
 			vertexIdPartitionIndex.put(partitionIndexKey[i], Long.valueOf(graphPartitionIndex.get(i)));
-			vertexIdPartitionIndexMap.put(i, graphPartitionIndex.get(i));
+			vertexIdPartitionIndexMap.put(partitionIndexKey[i], graphPartitionIndex.get(i));
 		}
 
 		// Depending upon the size of cluster, CustomPartitionSize can be changed
@@ -318,13 +317,13 @@ public class GraphNetworkSCLAlgorithm {
 //		}
 //
 //		bst.storeArray(arrayOfBorderNodes);
+		Map<Integer, ArrayList<holder>> DARTTableMap = findNNForEmbeddedGraph(boundaryVerticesList,
+				vertexIdPartitionIndexMap, cGraph);
 
-		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-			int nodeId = Integer.parseInt(boundaryVerticesList.get(i));
-			findNNForEmbeddedGraph(nodeId, cGraph);
+		for (Integer borderNode : DARTTableMap.keySet()) {
+			System.out.println(
+					"Border Vertex: " + borderNode + " Nearest Data object is: " + DARTTableMap.get(borderNode));
 		}
-
-		System.out.println("DartTable: " + DARTTableMap.toString());
 
 		/**
 		 * Load Spark Necessary Items
@@ -763,172 +762,81 @@ public class GraphNetworkSCLAlgorithm {
 
 	}
 
-	/*
-	 * 
-	 * public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph,
-	 * ArrayList<String> boundaryVerticesList) {
-	 * 
-	 * Initially create a Binary search tree to index the boundaryVertices Take the
-	 * nodeId and run the traversal: check if the adjacent node is in the BST or not
-	 * If not check the edgeId with two nodes, check if there is any data object or
-	 * not If yes create a holder class and add the details and add it as arraylist
-	 * 
-	 * 
-	 * 
-	 * Map<Integer, ArrayList<holder>> result = new HashMap<Integer,
-	 * ArrayList<holder>>();
-	 * 
-	 * List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
-	 * ArrayList<holder> NNLists = new ArrayList<>();
-	 * 
-	 * String towardsAnotherBorder = "tb"; String towardsNonBorder = "ntb";
-	 * 
-	 * int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()]; Set<Integer>
-	 * boundaryVertices = new HashSet<>();
-	 * 
-	 * for (int i = 0; i < boundaryVerticesList.size(); i++) { int vertex =
-	 * Integer.parseInt(boundaryVerticesList.get(i)); arrayOfBorderNodes[i] =
-	 * vertex; boundaryVertices.add(vertex); }
-	 * 
-	 * PriorityQueue<NodeDistance> pq = new PriorityQueue<NodeDistance>();
-	 * 
-	 * boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
-	 * pq.offer(new NodeDistance(nodeId, 0.0)); // pq.add(nodeId); // set the
-	 * distace as 0 // double nearestDistance = 0.0;
-	 * 
-	 * visited[nodeId] = true;
-	 * 
-	 * while (!pq.isEmpty()) { NodeDistance currentNode = pq.poll();
-	 * 
-	 * for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.nodeId)) { if
-	 * (!visited[adjacentNodes]) { visited[adjacentNodes] = true; double distance =
-	 * currentNode.distance; int edgeId = cGraph.getEdgeId(currentNode.nodeId,
-	 * adjacentNodes); List<RoadObject> objects =
-	 * cGraph.getObjectsOnEdges().get(edgeId);
-	 * 
-	 * if (objects != null) { for (RoadObject rObj : objects) { if (rObj.getType()
-	 * == false) { distance += rObj.getDistanceFromStartNode(); // nnList.add(new
-	 * Tuple3<>(towardsNonBorder, rObj.getObjectId(), distance)); holder hold = new
-	 * holder(rObj.getObjectId(), towardsNonBorder, distance); NNLists.add(hold);
-	 * DARTTableMap.put(currentNode.nodeId, NNLists); } else { distance +=
-	 * cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes); } } } else {
-	 * distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes); }
-	 * 
-	 * if (boundaryVertices.contains(adjacentNodes)) { nnList.add(new
-	 * Tuple3<>(towardsAnotherBorder, adjacentNodes, distance)); //holder hold = new
-	 * holder(rObj.getObjectId(), towardsAnotherBorder, distance);
-	 * NNLists.add(hold); DARTTableMap.put(currentNode.nodeId, NNLists); } else {
-	 * pq.offer(new NodeDistance(adjacentNodes, distance)); } } } }
-	 * 
-	 * // while (pq.size() != 0) { // nodeId = pq.poll(); // // // Get all adjacent
-	 * vertices of the dequeued // // vertex If a adjacent has not been visited, //
-	 * // then mark it visited and enqueue it // // Iterator<Integer> i =
-	 * cGraph.getAdjNodeIds(nodeId).listIterator(); // while (i.hasNext()) { // int
-	 * adjacentNode = i.next(); // // if (!visited[adjacentNode]) { // // you get
-	 * the nodes, now check if the node is in the border node or not // if
-	 * ((vertexIdPartitionIndexMap.get(nodeId) ==
-	 * vertexIdPartitionIndexMap.get(adjacentNode))) { // // check if the edge has
-	 * any data object in it or not. // //
-	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode)); //
-	 * for (RoadObject rObj :
-	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode))) { //
-	 * if (rObj.getType() != true) { // nearestDistance = nearestDistance +
-	 * rObj.getDistanceFromStartNode(); // // nnList.add(new Tuple3<String, Integer,
-	 * Double>(towardsNonBorder, rObj.getObjectId(), // nearestDistance)); // // }
-	 * // if there is no data object then simply add the edge // else //
-	 * nearestDistance = nearestDistance + cGraph.getEdgeDistance(nodeId,
-	 * adjacentNode); // continue; // } // // } else if
-	 * ((vertexIdPartitionIndexMap.get(nodeId) !=
-	 * vertexIdPartitionIndexMap.get(adjacentNode))) { // //
-	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode)); //
-	 * for (RoadObject rObj :
-	 * cGraph.getObjectsOnEdges().get(cGraph.getEdgeId(nodeId, adjacentNode))) { //
-	 * if (rObj.getType() != true) { // nearestDistance = nearestDistance +
-	 * rObj.getDistanceFromStartNode(); // // nnList.add(new Tuple3<String, Integer,
-	 * Double>(towardsAnotherBorder, rObj.getObjectId(), // nearestDistance)); // //
-	 * } else // nearestDistance = nearestDistance + cGraph.getEdgeDistance(nodeId,
-	 * adjacentNode); // continue; // } // // } // visited[adjacentNode] = true; //
-	 * pq.add(adjacentNode); // } // // } // }
-	 * 
-	 * }
-	 */
+	public static Map<Integer, ArrayList<holder>> findNNForEmbeddedGraph(LinkedList<String> boundaryVerticesList,
+			Map<Integer, Integer> vertexIdPartitionIndexMap, CoreGraph cGraph) {
 
-	public static void findNNForEmbeddedGraph(int nodeId, CoreGraph cGraph) {
+		Map<Integer, ArrayList<holder>> DARTTableMap = new HashMap<>();
 
-		List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
-		ArrayList<holder> NNLists = new ArrayList<>();
+		String differentPartition = "dp";
+		String samePartition = "sp";
 
-		String towardsAnotherBorder = "tb";
-		String towardsNonBorder = "ntb";
+		for (int i = 0; i < boundaryVerticesList.size(); i++) {
+			int nodeId = Integer.parseInt(boundaryVerticesList.get(i));
 
-//		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
-//		Set<Integer> boundaryVertices = new HashSet<>();
-//
-//		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-//			int vertex = Integer.parseInt(boundaryVerticesList.get(i));
-//			arrayOfBorderNodes[i] = vertex;
-//			boundaryVertices.add(vertex);
-//		}
+			// List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
 
-		PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
-		boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
-		pq.offer(new NodeDistance(nodeId, 0.0));
-		visited[nodeId] = true;
+			PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
+			boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
+			pq.offer(new NodeDistance(nodeId, 0.0));
+			visited[nodeId] = true;
 
-		while (!pq.isEmpty()) {
-			NodeDistance currentNode = pq.poll();
+			ArrayList<holder> NNLists = new ArrayList<>();
 
-			for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.nodeId)) {
-				if (!visited[adjacentNodes]) {
-					visited[adjacentNodes] = true;
-					double distance = currentNode.distance;
-					int edgeId = cGraph.getEdgeId(currentNode.nodeId, adjacentNodes);
-					List<RoadObject> objects = cGraph.getObjectsOnEdges().get(edgeId);
+			while (!pq.isEmpty()) {
+				NodeDistance currentNode = pq.poll();
 
-					if (objects != null) {
-						for (RoadObject rObj : objects) {
-							if (rObj.getType() == false) {
-								distance += rObj.getDistanceFromStartNode();
+				for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.nodeId)) {
+					if (!visited[adjacentNodes]) {
+						visited[adjacentNodes] = true;
+						double distance = currentNode.distance;
+						int edgeId = cGraph.getEdgeId(currentNode.nodeId, adjacentNodes);
+						List<RoadObject> objects = cGraph.getObjectsOnEdges().get(edgeId);
 
-								if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap
-										.get(adjacentNodes)) {
-									holder hold = new holder(rObj.getObjectId(), towardsNonBorder, distance);
-									NNLists.add(hold);
-									DARTTableMap.put(currentNode.nodeId, NNLists);
-								} else if (vertexIdPartitionIndexMap.get(currentNode) != vertexIdPartitionIndexMap
-										.get(adjacentNodes)) {
+						if (objects != null) {
+							for (RoadObject rObj : objects) {
+								if (rObj.getType() == false) {
+									distance += rObj.getDistanceFromStartNode();
 
-									holder hold = new holder(rObj.getObjectId(), towardsAnotherBorder, distance);
-									NNLists.add(hold);
-									DARTTableMap.put(currentNode.nodeId, NNLists);
+									if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap
+											.get(adjacentNodes)) {
+										holder hold = new holder(rObj.getObjectId(), samePartition, distance);
+										if (NNLists.size() < 2) {
+											NNLists.add(hold);
+											DARTTableMap.put(currentNode.nodeId, NNLists);
+										} else
+											continue;
+										// NNLists.add(hold);
+										// DARTTableMap.put(currentNode.nodeId, NNLists);
+
+									} else if (vertexIdPartitionIndexMap.get(currentNode) != vertexIdPartitionIndexMap
+											.get(adjacentNodes)) {
+
+										holder hold = new holder(rObj.getObjectId(), differentPartition, distance);
+										if (NNLists.size() < 2) {
+											NNLists.add(hold);
+											DARTTableMap.put(currentNode.nodeId, NNLists);
+										} else
+											continue;
+
+									}
+
+								} else {
+									distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
+									pq.offer(new NodeDistance(adjacentNodes, distance));
 								}
-
-								if (NNLists.size() == 2) {
-									break;
-								}
-
-							} else {
-								distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
 							}
+
+						} else {
+							distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
+							pq.offer(new NodeDistance(adjacentNodes, distance));
 						}
-						if (NNLists.size() == 2) {
-							break;
-						}
-					} else {
-						distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
+
 					}
 
-//					if (boundaryVertices.contains(adjacentNodes)) {
-//						nnList.add(new Tuple3<>(towardsAnotherBorder, adjacentNodes, distance));
-//						holder hold = new holder(adjacentNodes, towardsAnotherBorder, distance);
-//						NNLists.add(hold);
-//						DARTTableMap.put(currentNode.nodeId, NNLists);
-//						if (NNLists.size() == 2)
-//							break;
-//					}
 				}
 			}
 		}
+		return DARTTableMap;
 	}
 
 //To compare the Distances
@@ -958,7 +866,7 @@ public class GraphNetworkSCLAlgorithm {
 
 		public holder(int objectId, String side, Double distance) {
 			this.objectId = objectId;
-			if ((side.equalsIgnoreCase("tb")) && (side.equalsIgnoreCase("ntb"))) {
+			if ((side.equalsIgnoreCase("dp")) || (side.equalsIgnoreCase("sp"))) {
 				this.side = side;
 			} else {
 				throw new IllegalArgumentException("Invalid Input");
