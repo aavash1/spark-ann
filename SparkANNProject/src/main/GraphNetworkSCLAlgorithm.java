@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -317,13 +318,16 @@ public class GraphNetworkSCLAlgorithm {
 //		}
 //
 //		bst.storeArray(arrayOfBorderNodes);
+//		for (String str : boundaryVerticesList) {
+//			System.out.println("border node: " + str);
+//		}
 		Map<Integer, ArrayList<holder>> DARTTableMap = findNNForEmbeddedGraph(boundaryVerticesList,
 				vertexIdPartitionIndexMap, cGraph);
 
-		for (Integer borderNode : DARTTableMap.keySet()) {
-			System.out.println(
-					"Border Vertex: " + borderNode + " Nearest Data object is: " + DARTTableMap.get(borderNode));
-		}
+//		for (Integer borderNode : DARTTableMap.keySet()) {
+//			System.out.println(
+//					"Border Vertex: " + borderNode + " Nearest Data object is: " + DARTTableMap.get(borderNode));
+//		}
 
 		/**
 		 * Load Spark Necessary Items
@@ -345,6 +349,21 @@ public class GraphNetworkSCLAlgorithm {
 		try (JavaSparkContext jscontext = new JavaSparkContext(config)) {
 
 			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+
+			JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext
+					.parallelize(DARTTableMap.entrySet().stream()
+							.map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+
+//			if (DARTTableRDD != null) {
+//				DARTTableRDD.foreach(tuple -> {
+//					System.out.println("Border Vertex: " + tuple._1());
+//					System.out.println("Nearest Data Object: " + tuple._2().get(0).objectId + ", "
+//							+ tuple._2().get(0).side + ", " + tuple._2().get(0).distance);
+//				});
+//
+//			} else {
+//				System.out.println("The RDD does not exist.");
+//			}
 
 			JavaRDD<String> BoundaryVertexRDD = jscontext.parallelize(boundaryVerticesList);
 			JavaRDD<cEdge> BoundaryEdgeRDD = jscontext.parallelize(BoundaryEdge);
@@ -397,7 +416,7 @@ public class GraphNetworkSCLAlgorithm {
 			 **/
 
 			CoreGraph embeddedGraph = createAugmentedNetwork(cGraph, pathRDD, BoundaryEdge, boundaryPairVertices);
-			embeddedGraph.printEdgesInfo();
+			// embeddedGraph.printEdgesInfo();
 
 			/**
 			 * Once the graph is created: 1) Combine the GraphRDD with RoadObjectPairRDD,
