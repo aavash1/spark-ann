@@ -321,8 +321,14 @@ public class GraphNetworkSCLAlgorithm {
 //		for (String str : boundaryVerticesList) {
 //			System.out.println("border node: " + str);
 //		}
+
+		long startTime1 = System.currentTimeMillis();
 		Map<Integer, ArrayList<holder>> DARTTableMap = findNNForEmbeddedGraph(boundaryVerticesList,
 				vertexIdPartitionIndexMap, cGraph);
+		long endTime1 = System.currentTimeMillis();
+		long totalTime1 = endTime1 - startTime1;
+		double totalTimeInSeconds = (double) totalTime1 / 1000;
+		System.out.println("Precomputation Time: " + totalTimeInSeconds + "second");
 
 //		for (Integer borderNode : DARTTableMap.keySet()) {
 //			System.out.println(
@@ -479,7 +485,7 @@ public class GraphNetworkSCLAlgorithm {
 						// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
 						List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
 						// CoreGraph subGraph1 = new CoreGraph();
-						private long duration = 0l;
+						private double duration = 0.0;
 
 						@Override
 						public void call(
@@ -553,10 +559,10 @@ public class GraphNetworkSCLAlgorithm {
 								Map<Integer, LinkedList<Integer>> nodeCluster = clusteringNodes.cluster(subGraph0);
 
 								clusteredANN can = new clusteredANN();
-								long startTime = System.nanoTime();
+								long startTime = System.currentTimeMillis();
 								nearestNeighborList = can.call(subGraph0, true, nodeCluster);
-								long endTime = System.nanoTime();
-								duration = (endTime - startTime) / 10000000;
+								long endTime = System.currentTimeMillis();
+								duration = (double) ((endTime - startTime) / 1000);
 								// clusteredANN can = new clusteredANN();
 								// nnList = can.call(subGraph0, true);
 
@@ -568,7 +574,7 @@ public class GraphNetworkSCLAlgorithm {
 //								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
 
 							}
-							System.out.println("Time taken to run algorithm: " + duration);
+							System.out.println("Time taken to run algorithm: " + duration + " seconds");
 
 						}
 					});
