@@ -2,8 +2,6 @@ package algorithm;
 
 import java.io.Serializable;
 
-import scala.collection.immutable.NewRedBlackTree.Tree;
-
 public class BinarySearchTree implements Serializable {
 
 	public static class TreeNode {

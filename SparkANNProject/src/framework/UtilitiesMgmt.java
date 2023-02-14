@@ -14,18 +14,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.spark.graphx.Edge;
+import org.apache.spark.graphx.Graph;
+
 import graph.Vertices;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
-import org.apache.spark.graphx.Edge;
-import org.apache.spark.graphx.Graph;
 
 import scala.Tuple2;
 
 public class UtilitiesMgmt {
 	final static String txtSplitBy = " ";
-
 
 	public static List<Edge<Double>> readTextEdgeFile(List<Edge<Double>> edgeList, String txtFileName)
 			throws FileNotFoundException, IOException {

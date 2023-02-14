@@ -1,7 +1,7 @@
 package framework;
 
+import java.io.Serializable;
 import java.util.Comparator;
-import scala.Serializable;
 
 public class cEdge implements Serializable {
 

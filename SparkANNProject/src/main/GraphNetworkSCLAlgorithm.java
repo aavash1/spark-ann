@@ -3,20 +3,19 @@ package main;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Level;
+//import org.apache.log4j.Logger;
+
 import org.apache.spark.SparkConf;
+
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -27,15 +26,12 @@ import org.apache.spark.api.java.function.PairFlatMapFunction;
 
 import org.apache.spark.api.java.function.VoidFunction;
 
-import com.github.davidmoten.rtree.RTree;
-import com.github.davidmoten.rtree.geometry.Line;
-
 import algorithm.ANNClusteredOptimizedWithHeuristic;
-import algorithm.BinarySearchTree;
+
 import algorithm.ClusteringNodes;
 import algorithm.ClusteringRoadObjects;
 import algorithm.NearestNeighbor;
-import algorithm.RTreeIndexer;
+
 import algorithm.RandomObjectGenerator;
 import graph.CustomPartitioner;
 import framework.CoreGraph;
@@ -299,13 +295,13 @@ public class GraphNetworkSCLAlgorithm {
 		 */
 		ArrayList<List<Path>> shortestPathList = runSPFAlgo(yGraph, stringBoundaryVertices, CustomPartitionSize);
 
-		System.out.println();
+		// System.out.println();
 
 		/**
 		 * From the given graph create Indexing scheme using RTrees
 		 * 
 		 */
-		RTree<Integer, Line> rtree = RTreeIndexer.createRTree(cGraph);
+		// RTree<Integer, Line> rtree = RTreeIndexer.createRTree(cGraph);
 		// int size = rtree.size();
 		// System.out.println("Number of entries in RTree: " + size);
 
@@ -338,27 +334,36 @@ public class GraphNetworkSCLAlgorithm {
 		/**
 		 * Load Spark Necessary Items
 		 */
-		Logger.getLogger("org.apache").setLevel(Level.WARN);
+		// Logger.getLogger("org.apache").setLevel(Level.WARN);
 
-//		SparkConf config = new SparkConf().setAppName("ANNCLUSTERD").set("spark.locality.wait", "0")
+//		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.locality.wait", "0")
 //				.set("spark.submit.deployMode", "cluster").set("spark.driver.maxResultSize", "6g")
-//				.set("spark.executor.memory", "6g").setMaster("spark://34.80.87.222:7077").set("spark.cores.max", "8")
+//				.set("spark.executor.memory", "6g").setMaster("spark://35.194.176.13:8188").set("spark.cores.max", "8")
 //				.set("spark.blockManager.port", "10025").set("spark.driver.blockManager.port", "10026")
 //				.set("spark.driver.port", "10027").set("spark.shuffle.service.enabled", "false")
-//				.set("spark.dynamicAllocation.enabled", "false");
+//				.set("spark.dynamicAllocation.enabled", "false")
+//				.set("spark.metrics.conf.*.sink.console.class", "org.apache.spark.metrics.sink.ConsoleSink");
 
 		// SparkConf config = new
 		// SparkConf().setMaster("local[*]").setAppName("ANNCLUSTERED");
 
-		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
+		// SparkConf config = new
+		// SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
 
-		try (JavaSparkContext jscontext = new JavaSparkContext(config)) {
+//		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+//				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
 
-			System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
+				.set("spark.cores.max", "8");
 
-			JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext
-					.parallelize(DARTTableMap.entrySet().stream()
-							.map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
+		JavaSparkContext jscontext = new JavaSparkContext(config);
+
+		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+//
+//			JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext
+//					.parallelize(DARTTableMap.entrySet().stream()
+//							.map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
 
 //			if (DARTTableRDD != null) {
 //				DARTTableRDD.foreach(tuple -> {
@@ -371,200 +376,200 @@ public class GraphNetworkSCLAlgorithm {
 //				System.out.println("The RDD does not exist.");
 //			}
 
-			JavaRDD<String> BoundaryVertexRDD = jscontext.parallelize(boundaryVerticesList);
-			JavaRDD<cEdge> BoundaryEdgeRDD = jscontext.parallelize(BoundaryEdge);
+		// JavaRDD<String> BoundaryVertexRDD =
+		// jscontext.parallelize(boundaryVerticesList);
+		// JavaRDD<cEdge> BoundaryEdgeRDD = jscontext.parallelize(BoundaryEdge);
 
 //			BoundaryEdgeRDD.foreach(
 //					x -> System.out.println(x.getStartNodeId() + "-->" + x.getEndNodeId() + " : " + x.getLength()));
 //			System.out.println(" ");/SparkANN/convertedGraphs/California_Edges.txt
 
-			JavaRDD<List<Tuple3<Integer, Integer, Double>>> pathRDD = jscontext.parallelize(shortestPathList)
-					.map(new Function<List<Path>, List<Tuple3<Integer, Integer, Double>>>() {
+		JavaRDD<List<Tuple3<Integer, Integer, Double>>> pathRDD = jscontext.parallelize(shortestPathList)
+				.map(new Function<List<Path>, List<Tuple3<Integer, Integer, Double>>>() {
 
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
 
-						@Override
-						public List<Tuple3<Integer, Integer, Double>> call(List<Path> shortestPathList)
-								throws Exception {
+					@Override
+					public List<Tuple3<Integer, Integer, Double>> call(List<Path> shortestPathList) throws Exception {
 
-							List<Tuple3<Integer, Integer, Double>> edgesForEmbeddedNetwork = new ArrayList<>();
+						List<Tuple3<Integer, Integer, Double>> edgesForEmbeddedNetwork = new ArrayList<>();
 
-							for (Path p : shortestPathList) {
-								try {
-									int a = Integer.parseInt(p.getEdges().getFirst().getFromNode().toString());
+						for (Path p : shortestPathList) {
+							try {
+								int a = Integer.parseInt(p.getEdges().getFirst().getFromNode().toString());
 
-									int b = Integer.parseInt(p.getEdges().getLast().getToNode().toString());
+								int b = Integer.parseInt(p.getEdges().getLast().getToNode().toString());
 
-									double dist = Math.abs(p.getTotalCost());
-									// System.out.println(a + "-->" + b + " : " + dist);
+								double dist = Math.abs(p.getTotalCost());
+								// System.out.println(a + "-->" + b + " : " + dist);
 
-									edgesForEmbeddedNetwork.add(new Tuple3<Integer, Integer, Double>(a, b, dist));
+								edgesForEmbeddedNetwork.add(new Tuple3<Integer, Integer, Double>(a, b, dist));
 
-								} catch (NumberFormatException e) {
+							} catch (NumberFormatException e) {
+							}
+
+						}
+
+						return edgesForEmbeddedNetwork;
+					}
+
+				});
+
+		/**
+		 * Creating Embedded Network Graph: 1) Initially create a Virtual Vertex 2)
+		 * Create a Embedded graph connecting VIRTUAL NODE to every other boundary Nodes
+		 * 3) Set the weights as ZERO 4) Run the traversal from VIRTUAL NODE to other
+		 * BOUNDARY NODES 5) Calculate the distance to the nearest node and store it in
+		 * a array Tuple2<Object,Map<Object,Double>> VirtualGraph
+		 **/
+
+		CoreGraph embeddedGraph = createAugmentedNetwork(cGraph, pathRDD, BoundaryEdge, boundaryPairVertices);
+		// embeddedGraph.printEdgesInfo();
+
+		/**
+		 * Once the graph is created: 1) Combine the GraphRDD with RoadObjectPairRDD,
+		 * and BoundaryEdgeRDD. 2) Apply CustomPartitioner function on the newly created
+		 * RDD 3)
+		 */
+
+		JavaRDD<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>> tupleForSubgraphsRDD = jscontext
+				.parallelize(tuplesForSubgraphs);
+
+		JavaPairRDD<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>> tupleForSubgraphsPairRDD = tupleForSubgraphsRDD
+				.mapPartitionsToPair(
+						new PairFlatMapFunction<Iterator<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>>, Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>() {
+
+							/**
+							 * 
+							 */
+							private static final long serialVersionUID = 1L;
+
+							@Override
+							public Iterator<Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> call(
+									Iterator<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>> rowTups)
+									throws Exception {
+
+								List<Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> infoListWithKey = new ArrayList<>();
+								while (rowTups.hasNext()) {
+									Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>> element = rowTups
+											.next();
+									Object partitionIndex = element._1();
+									Object sourceVertex = element._2();
+									Object destVertex = element._3();
+									Double edgeLength = element._4();
+									ArrayList<RoadObject> listOfRoadObjects = element._5();
+
+									Tuple4<Object, Object, Double, ArrayList<RoadObject>> t = new Tuple4<Object, Object, Double, ArrayList<RoadObject>>(
+											sourceVertex, destVertex, edgeLength, listOfRoadObjects);
+									infoListWithKey.add(
+											new Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>(
+													partitionIndex, t));
+								}
+
+								return infoListWithKey.iterator();
+							}
+
+						});
+
+		JavaPairRDD<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> toCreateSubgraphRDD = tupleForSubgraphsPairRDD
+				.groupByKey().partitionBy(new CustomPartitioner(CustomPartitionSize));
+
+		// toCreateSubgraphRDD.foreach(x -> System.out.println(x));
+
+		toCreateSubgraphRDD.foreachPartition(
+				new VoidFunction<Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>>>() {
+
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+					// private List<Map<Integer, Integer>> NNListMap = new ArrayList<>();
+					// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
+					List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
+					// CoreGraph subGraph1 = new CoreGraph();
+					private double duration = 0.0;
+
+					@Override
+					public void call(
+							Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>> eachTuple)
+							throws Exception {
+
+						int sourceVertex;
+						int destVertex;
+						double edgeLength;
+
+						int roadObjectId;
+						boolean roadObjectType;
+						double distanceFromStart;
+
+						while (eachTuple.hasNext()) {
+							CoreGraph subGraph0 = new CoreGraph();
+							Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> theTup = eachTuple
+									.next();
+
+							ArrayList<Integer> addedEdge = new ArrayList<Integer>();
+							ArrayList<Integer> addedObjects = new ArrayList<Integer>();
+							Iterator<Tuple4<Object, Object, Double, ArrayList<RoadObject>>> iter = theTup._2()
+									.iterator();
+							while (iter.hasNext()) {
+								Tuple4<Object, Object, Double, ArrayList<RoadObject>> listInfo = iter.next();
+								sourceVertex = Integer.parseInt(String.valueOf(listInfo._1()));
+								destVertex = Integer.parseInt(String.valueOf(listInfo._2()));
+								edgeLength = listInfo._3();
+
+								ArrayList<RoadObject> roadObjList = listInfo._4();
+
+								if (addedEdge.isEmpty()) {
+									subGraph0.addEdge(sourceVertex, destVertex, edgeLength);
+									int currentEdgeId = subGraph0.getEdgeId(sourceVertex, destVertex);
+									addedEdge.add(currentEdgeId);
+
+								} else if ((!addedEdge.isEmpty()
+										&& (!addedEdge.contains(subGraph0.getEdgeId(sourceVertex, destVertex))))) {
+									subGraph0.addEdge(sourceVertex, destVertex, edgeLength);
+									int currentEdgeId = subGraph0.getEdgeId(sourceVertex, destVertex);
+									addedEdge.add(currentEdgeId);
+								}
+
+								if (roadObjList != null) {
+									for (int i = 0; i < roadObjList.size(); i++) {
+										roadObjectId = roadObjList.get(i).getObjectId();
+										roadObjectType = roadObjList.get(i).getType();
+										distanceFromStart = roadObjList.get(i).getDistanceFromStartNode();
+
+										RoadObject rn0 = new RoadObject();
+										rn0.setObjId(roadObjectId);
+										rn0.setType(roadObjectType);
+										rn0.setDistanceFromStartNode(distanceFromStart);
+
+										if (addedObjects.isEmpty()) {
+											subGraph0.addObjectOnEdge(subGraph0.getEdgeId(sourceVertex, destVertex),
+													rn0);
+											addedObjects.add(rn0.getObjectId());
+										} else if ((!addedObjects.isEmpty())
+												&& (!addedObjects.contains(rn0.getObjectId()))) {
+											subGraph0.addObjectOnEdge(subGraph0.getEdgeId(sourceVertex, destVertex),
+													rn0);
+											addedObjects.add(rn0.getObjectId());
+										}
+
+									}
 								}
 
 							}
+							ClusteringNodes clusteringNodes = new ClusteringNodes();
+							Map<Integer, LinkedList<Integer>> nodeCluster = clusteringNodes.cluster(subGraph0);
 
-							return edgesForEmbeddedNetwork;
-						}
-
-					});
-
-			/**
-			 * Creating Embedded Network Graph: 1) Initially create a Virtual Vertex 2)
-			 * Create a Embedded graph connecting VIRTUAL NODE to every other boundary Nodes
-			 * 3) Set the weights as ZERO 4) Run the traversal from VIRTUAL NODE to other
-			 * BOUNDARY NODES 5) Calculate the distance to the nearest node and store it in
-			 * a array Tuple2<Object,Map<Object,Double>> VirtualGraph
-			 **/
-
-			CoreGraph embeddedGraph = createAugmentedNetwork(cGraph, pathRDD, BoundaryEdge, boundaryPairVertices);
-			// embeddedGraph.printEdgesInfo();
-
-			/**
-			 * Once the graph is created: 1) Combine the GraphRDD with RoadObjectPairRDD,
-			 * and BoundaryEdgeRDD. 2) Apply CustomPartitioner function on the newly created
-			 * RDD 3)
-			 */
-
-			JavaRDD<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>> tupleForSubgraphsRDD = jscontext
-					.parallelize(tuplesForSubgraphs);
-
-			JavaPairRDD<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>> tupleForSubgraphsPairRDD = tupleForSubgraphsRDD
-					.mapPartitionsToPair(
-							new PairFlatMapFunction<Iterator<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>>, Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>() {
-
-								/**
-								 * 
-								 */
-								private static final long serialVersionUID = 1L;
-
-								@Override
-								public Iterator<Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> call(
-										Iterator<Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>>> rowTups)
-										throws Exception {
-
-									List<Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> infoListWithKey = new ArrayList<>();
-									while (rowTups.hasNext()) {
-										Tuple5<Object, Object, Object, Double, ArrayList<RoadObject>> element = rowTups
-												.next();
-										Object partitionIndex = element._1();
-										Object sourceVertex = element._2();
-										Object destVertex = element._3();
-										Double edgeLength = element._4();
-										ArrayList<RoadObject> listOfRoadObjects = element._5();
-
-										Tuple4<Object, Object, Double, ArrayList<RoadObject>> t = new Tuple4<Object, Object, Double, ArrayList<RoadObject>>(
-												sourceVertex, destVertex, edgeLength, listOfRoadObjects);
-										infoListWithKey.add(
-												new Tuple2<Object, Tuple4<Object, Object, Double, ArrayList<RoadObject>>>(
-														partitionIndex, t));
-									}
-
-									return infoListWithKey.iterator();
-								}
-
-							});
-
-			JavaPairRDD<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> toCreateSubgraphRDD = tupleForSubgraphsPairRDD
-					.groupByKey().partitionBy(new CustomPartitioner(CustomPartitionSize));
-
-			// toCreateSubgraphRDD.foreach(x -> System.out.println(x));
-
-			toCreateSubgraphRDD.foreachPartition(
-					new VoidFunction<Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>>>() {
-
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-						// private List<Map<Integer, Integer>> NNListMap = new ArrayList<>();
-						// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
-						List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
-						// CoreGraph subGraph1 = new CoreGraph();
-						private double duration = 0.0;
-
-						@Override
-						public void call(
-								Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>> eachTuple)
-								throws Exception {
-
-							int sourceVertex;
-							int destVertex;
-							double edgeLength;
-
-							int roadObjectId;
-							boolean roadObjectType;
-							double distanceFromStart;
-
-							while (eachTuple.hasNext()) {
-								CoreGraph subGraph0 = new CoreGraph();
-								Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>> theTup = eachTuple
-										.next();
-
-								ArrayList<Integer> addedEdge = new ArrayList<Integer>();
-								ArrayList<Integer> addedObjects = new ArrayList<Integer>();
-								Iterator<Tuple4<Object, Object, Double, ArrayList<RoadObject>>> iter = theTup._2()
-										.iterator();
-								while (iter.hasNext()) {
-									Tuple4<Object, Object, Double, ArrayList<RoadObject>> listInfo = iter.next();
-									sourceVertex = Integer.parseInt(String.valueOf(listInfo._1()));
-									destVertex = Integer.parseInt(String.valueOf(listInfo._2()));
-									edgeLength = listInfo._3();
-
-									ArrayList<RoadObject> roadObjList = listInfo._4();
-
-									if (addedEdge.isEmpty()) {
-										subGraph0.addEdge(sourceVertex, destVertex, edgeLength);
-										int currentEdgeId = subGraph0.getEdgeId(sourceVertex, destVertex);
-										addedEdge.add(currentEdgeId);
-
-									} else if ((!addedEdge.isEmpty()
-											&& (!addedEdge.contains(subGraph0.getEdgeId(sourceVertex, destVertex))))) {
-										subGraph0.addEdge(sourceVertex, destVertex, edgeLength);
-										int currentEdgeId = subGraph0.getEdgeId(sourceVertex, destVertex);
-										addedEdge.add(currentEdgeId);
-									}
-
-									if (roadObjList != null) {
-										for (int i = 0; i < roadObjList.size(); i++) {
-											roadObjectId = roadObjList.get(i).getObjectId();
-											roadObjectType = roadObjList.get(i).getType();
-											distanceFromStart = roadObjList.get(i).getDistanceFromStartNode();
-
-											RoadObject rn0 = new RoadObject();
-											rn0.setObjId(roadObjectId);
-											rn0.setType(roadObjectType);
-											rn0.setDistanceFromStartNode(distanceFromStart);
-
-											if (addedObjects.isEmpty()) {
-												subGraph0.addObjectOnEdge(subGraph0.getEdgeId(sourceVertex, destVertex),
-														rn0);
-												addedObjects.add(rn0.getObjectId());
-											} else if ((!addedObjects.isEmpty())
-													&& (!addedObjects.contains(rn0.getObjectId()))) {
-												subGraph0.addObjectOnEdge(subGraph0.getEdgeId(sourceVertex, destVertex),
-														rn0);
-												addedObjects.add(rn0.getObjectId());
-											}
-
-										}
-									}
-
-								}
-								ClusteringNodes clusteringNodes = new ClusteringNodes();
-								Map<Integer, LinkedList<Integer>> nodeCluster = clusteringNodes.cluster(subGraph0);
-
-								clusteredANN can = new clusteredANN();
-								long startTime = System.currentTimeMillis();
-								nearestNeighborList = can.call(subGraph0, true, nodeCluster);
-								long endTime = System.currentTimeMillis();
-								duration = (double) ((endTime - startTime) / 1000);
-								// clusteredANN can = new clusteredANN();
-								// nnList = can.call(subGraph0, true);
+							clusteredANN can = new clusteredANN();
+							long startTime = System.currentTimeMillis();
+							nearestNeighborList = can.call(subGraph0, true, nodeCluster);
+							long endTime = System.currentTimeMillis();
+							duration = (double) ((endTime - startTime) / 1000);
+							// clusteredANN can = new clusteredANN();
+							// nnList = can.call(subGraph0, true);
 
 //								ANNNaive ann0 = new ANNNaive();
 //								Map<Integer, Integer> result = ann0.compute(subGraph0, true);
@@ -573,19 +578,17 @@ public class GraphNetworkSCLAlgorithm {
 //										.parallelize(nnList);
 //								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
 
-							}
-							System.out.println("Time taken to run algorithm: " + duration + " seconds");
-
 						}
-					});
+						System.out.println("Time taken to run algorithm: " + duration + " seconds");
+
+					}
+				});
 
 //			st.stop();
 //
 //			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
 
-			jscontext.close();
-
-		}
+		jscontext.close();
 
 	}
 
@@ -795,13 +798,14 @@ public class GraphNetworkSCLAlgorithm {
 		String differentPartition = "dp";
 		String samePartition = "sp";
 
-		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-			int nodeId = Integer.parseInt(boundaryVerticesList.get(i));
+		for (String bVertex : boundaryVerticesList) {
+
+			int nodeId = Integer.parseInt(bVertex);
 
 			// List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
 
 			PriorityQueue<NodeDistance> pq = new PriorityQueue<>();
-			boolean visited[] = new boolean[cGraph.getNodesWithInfo().size()];
+			boolean visited[] = new boolean[cGraph.getNodesWithInfo().size() + 1];
 			pq.offer(new NodeDistance(nodeId, 0.0));
 			visited[nodeId] = true;
 

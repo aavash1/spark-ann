@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Level;
+//import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -278,7 +278,7 @@ public class GraphNetworkBruteForce {
 		/**
 		 * Load Spark Necessary Items
 		 */
-		Logger.getLogger("org.apache").setLevel(Level.WARN);
+//		Logger.getLogger("org.apache").setLevel(Level.WARN);
 
 //		SparkConf config = new SparkConf().setAppName("ANNNaive").set("spark.locality.wait", "0")
 //				.set("spark.submit.deployMode", "cluster").set("spark.driver.maxResultSize", "2g")

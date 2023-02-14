@@ -1,8 +1,7 @@
 package framework;
 
+import java.io.Serializable;
 import java.util.Comparator;
-
-import scala.Serializable;
 
 public class RoadObject implements Serializable {
 	/**
@@ -18,7 +17,6 @@ public class RoadObject implements Serializable {
 	private boolean m_boolType; // 0 (False) - data object, 1 (True) - feature object,
 	private double m_doubRating; // [0, 10]
 
-	
 	public double getRating() {
 		return m_doubRating;
 	}

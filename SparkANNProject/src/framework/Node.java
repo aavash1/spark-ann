@@ -1,15 +1,13 @@
 package framework;
 
+import java.io.Serializable;
 import java.util.Comparator;
-
-import scala.Serializable;
 
 public class Node implements Serializable {
 	private int m_intNodeId;
 	private Double m_doubLatitude;
 	private Double m_doubLongitude;
 
-	
 	public Node(int nodeId, double longitude, double latitude) {
 		// TODO Auto-generated constructor stub
 		this.m_intNodeId = nodeId;
