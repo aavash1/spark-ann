@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import org.apache.spark.api.java.function.Function3;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 
 import org.apache.spark.api.java.function.VoidFunction;
+import org.apache.spark.broadcast.Broadcast;
 
 import algorithm.ANNClusteredOptimizedWithHeuristic;
 
@@ -326,10 +328,18 @@ public class GraphNetworkSCLAlgorithm {
 		double totalTimeInSeconds = (double) totalTime1 / 1000;
 		System.out.println("Precomputation Time: " + totalTimeInSeconds + "second");
 
-//		for (Integer borderNode : DARTTableMap.keySet()) {
-//			System.out.println(
-//					"Border Vertex: " + borderNode + " Nearest Data object is: " + DARTTableMap.get(borderNode));
-//		}
+		for (Integer borderNode : DARTTableMap.keySet()) {
+			for (holder result : DARTTableMap.get(borderNode)) {
+				if (result.getType() == true) {
+					System.out.println("Border Vertex: " + borderNode + " Nearest Query object is: "
+							+ DARTTableMap.get(borderNode).toString());
+				} else if (result.getType() == false) {
+					System.out.println("Border Vertex: " + borderNode + " Nearest Data object is: "
+							+ DARTTableMap.get(borderNode).toString());
+				}
+			}
+
+		}
 
 		/**
 		 * Load Spark Necessary Items
@@ -347,34 +357,35 @@ public class GraphNetworkSCLAlgorithm {
 		// SparkConf config = new
 		// SparkConf().setMaster("local[*]").setAppName("ANNCLUSTERED");
 
-		// SparkConf config = new
-		// SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
+		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
+
+		// For the cluster we can use any config from the below 2 config:
+		// BELOW, I repeat DOWN BELOW.
 
 //		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
 //				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
 
-		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
-				.set("spark.cores.max", "8");
+//		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+//				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
+//				.set("spark.cores.max", "8");
 
 		JavaSparkContext jscontext = new JavaSparkContext(config);
 
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 //
-//			JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext
-//					.parallelize(DARTTableMap.entrySet().stream()
-//							.map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
-
-//			if (DARTTableRDD != null) {
-//				DARTTableRDD.foreach(tuple -> {
-//					System.out.println("Border Vertex: " + tuple._1());
-//					System.out.println("Nearest Data Object: " + tuple._2().get(0).objectId + ", "
-//							+ tuple._2().get(0).side + ", " + tuple._2().get(0).distance);
-//				});
+//		JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext.parallelize(DARTTableMap.entrySet()
+//				.stream().map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
 //
-//			} else {
-//				System.out.println("The RDD does not exist.");
-//			}
+////		if (DARTTableRDD != null) {
+////			DARTTableRDD.foreach(tuple -> {
+////				System.out.println("Border Vertex: " + tuple._1());
+////				System.out.println("Nearest Data Object: " + tuple._2().get(0).objectId + ", " + tuple._2().get(0).side
+////						+ ", " + tuple._2().get(0).distance);
+////			});
+////
+////		} else {
+////			System.out.println("The RDD does not exist.");
+////		}
 
 		// JavaRDD<String> BoundaryVertexRDD =
 		// jscontext.parallelize(boundaryVerticesList);
@@ -383,6 +394,9 @@ public class GraphNetworkSCLAlgorithm {
 //			BoundaryEdgeRDD.foreach(
 //					x -> System.out.println(x.getStartNodeId() + "-->" + x.getEndNodeId() + " : " + x.getLength()));
 //			System.out.println(" ");/SparkANN/convertedGraphs/California_Edges.txt
+
+		// Broadcast<JavaRDD<Tuple2<Integer, ArrayList<holder>>>> broadcastedRDD =
+		// jscontext.broadcast(DARTTableRDD);
 
 		JavaRDD<List<Tuple3<Integer, Integer, Double>>> pathRDD = jscontext.parallelize(shortestPathList)
 				.map(new Function<List<Path>, List<Tuple3<Integer, Integer, Double>>>() {
@@ -486,6 +500,8 @@ public class GraphNetworkSCLAlgorithm {
 					 * 
 					 */
 					private static final long serialVersionUID = 1L;
+					// JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD =
+					// broadcastedRDD.getValue();
 					// private List<Map<Integer, Integer>> NNListMap = new ArrayList<>();
 					// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
 					List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
@@ -810,6 +826,9 @@ public class GraphNetworkSCLAlgorithm {
 			visited[nodeId] = true;
 
 			ArrayList<holder> NNLists = new ArrayList<>();
+			boolean flag1sp = true;
+			boolean flag2dp = true;
+			boolean flag3qo = true;
 
 			while (!pq.isEmpty()) {
 				NodeDistance currentNode = pq.poll();
@@ -828,10 +847,14 @@ public class GraphNetworkSCLAlgorithm {
 
 									if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap
 											.get(adjacentNodes)) {
-										holder hold = new holder(rObj.getObjectId(), samePartition, distance);
-										if (NNLists.size() < 2) {
-											NNLists.add(hold);
-											DARTTableMap.put(currentNode.nodeId, NNLists);
+										holder hold = new holder(rObj.getObjectId(), samePartition, distance, false);
+										if (NNLists.size() < 3) {
+											if (flag1sp != false) {
+												NNLists.add(hold);
+												DARTTableMap.put(currentNode.nodeId, NNLists);
+												flag1sp = false;
+											}
+
 										} else
 											continue;
 										// NNLists.add(hold);
@@ -840,16 +863,42 @@ public class GraphNetworkSCLAlgorithm {
 									} else if (vertexIdPartitionIndexMap.get(currentNode) != vertexIdPartitionIndexMap
 											.get(adjacentNodes)) {
 
-										holder hold = new holder(rObj.getObjectId(), differentPartition, distance);
-										if (NNLists.size() < 2) {
-											NNLists.add(hold);
-											DARTTableMap.put(currentNode.nodeId, NNLists);
+										holder hold = new holder(rObj.getObjectId(), differentPartition, distance,
+												false);
+										if (NNLists.size() < 3) {
+											if (flag2dp != false) {
+												NNLists.add(hold);
+												DARTTableMap.put(currentNode.nodeId, NNLists);
+												flag2dp = false;
+											}
+
 										} else
 											continue;
 
 									}
 
-								} else {
+								} else if (rObj.getType() == true) {
+									distance += rObj.getDistanceFromStartNode();
+									if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap
+											.get(adjacentNodes)) {
+										holder hold = new holder(rObj.getObjectId(), samePartition, distance, true);
+										if (NNLists.size() < 3) {
+											if (flag3qo != false) {
+												NNLists.add(hold);
+												DARTTableMap.put(currentNode.nodeId, NNLists);
+												flag3qo = false;
+											}
+
+										} else
+											continue;
+										// NNLists.add(hold);
+										// DARTTableMap.put(currentNode.nodeId, NNLists);
+
+									}
+
+								}
+
+								else {
 									distance += cGraph.getEdgeDistance(currentNode.nodeId, adjacentNodes);
 									pq.offer(new NodeDistance(adjacentNodes, distance));
 								}
@@ -892,8 +941,9 @@ public class GraphNetworkSCLAlgorithm {
 		private Integer objectId;
 		private String side;
 		private double distance;
+		private boolean type;
 
-		public holder(int objectId, String side, Double distance) {
+		public holder(int objectId, String side, Double distance, boolean type) {
 			this.objectId = objectId;
 			if ((side.equalsIgnoreCase("dp")) || (side.equalsIgnoreCase("sp"))) {
 				this.side = side;
@@ -902,6 +952,7 @@ public class GraphNetworkSCLAlgorithm {
 			}
 
 			this.distance = distance;
+			this.type = type;
 
 		}
 
@@ -918,7 +969,7 @@ public class GraphNetworkSCLAlgorithm {
 		}
 
 		public void setSide(String side) {
-			if ((side.equalsIgnoreCase("tb")) && (side.equalsIgnoreCase("ntb"))) {
+			if ((side.equalsIgnoreCase("sp")) || (side.equalsIgnoreCase("dp"))) {
 				this.side = side;
 			} else {
 				throw new IllegalArgumentException("Invalid Input");
@@ -932,6 +983,16 @@ public class GraphNetworkSCLAlgorithm {
 
 		public void setDistance(double distance) {
 			this.distance = distance;
+		}
+
+		public boolean getType() {
+			return type;
+		}
+
+		@Override
+		public String toString() {
+			return "Object Details: {" + "objectId=" + objectId + ", side='" + side + '\'' + ", distance=" + distance
+					+ ", type=" + type + '}';
 		}
 
 	}
