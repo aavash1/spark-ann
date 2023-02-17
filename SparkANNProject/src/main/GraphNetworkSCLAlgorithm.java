@@ -54,6 +54,8 @@ import scala.reflect.ClassTag;
 
 public class GraphNetworkSCLAlgorithm {
 
+	static List<Tuple3<Integer, Integer, Double>> ForComparison = null;
+
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
@@ -506,7 +508,7 @@ public class GraphNetworkSCLAlgorithm {
 					// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
 					List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
 					// CoreGraph subGraph1 = new CoreGraph();
-					private double duration = 0.0;
+					// private double duration = 0.0;
 
 					@Override
 					public void call(
@@ -583,7 +585,8 @@ public class GraphNetworkSCLAlgorithm {
 							long startTime = System.currentTimeMillis();
 							nearestNeighborList = can.call(subGraph0, true, nodeCluster);
 							long endTime = System.currentTimeMillis();
-							duration = (double) ((endTime - startTime) / 1000);
+							double duration = endTime - startTime;
+							ForComparison = nearestNeighborList;
 							// clusteredANN can = new clusteredANN();
 							// nnList = can.call(subGraph0, true);
 
@@ -593,9 +596,8 @@ public class GraphNetworkSCLAlgorithm {
 //								JavaRDD<Tuple3<Integer, Integer, Double>> NearestNeighborResult = jscontext
 //										.parallelize(nnList);
 //								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
-
+							System.out.println("Time taken to run algorithm: " + duration + " milli-seconds");
 						}
-						System.out.println("Time taken to run algorithm: " + duration + " seconds");
 
 					}
 				});
@@ -605,6 +607,10 @@ public class GraphNetworkSCLAlgorithm {
 //			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
 
 		jscontext.close();
+
+		for (Tuple3<Integer, Integer, Double> tuple : ForComparison) {
+			System.out.println(tuple.toString());
+		}
 
 	}
 
@@ -817,6 +823,9 @@ public class GraphNetworkSCLAlgorithm {
 		for (String bVertex : boundaryVerticesList) {
 
 			int nodeId = Integer.parseInt(bVertex);
+			boolean flag1sp = true;
+			boolean flag2dp = true;
+			boolean flag3qo = true;
 
 			// List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
 
@@ -826,9 +835,6 @@ public class GraphNetworkSCLAlgorithm {
 			visited[nodeId] = true;
 
 			ArrayList<holder> NNLists = new ArrayList<>();
-			boolean flag1sp = true;
-			boolean flag2dp = true;
-			boolean flag3qo = true;
 
 			while (!pq.isEmpty()) {
 				NodeDistance currentNode = pq.poll();
@@ -854,8 +860,9 @@ public class GraphNetworkSCLAlgorithm {
 												DARTTableMap.put(currentNode.nodeId, NNLists);
 												flag1sp = false;
 											}
+										}
 
-										} else
+										else
 											continue;
 										// NNLists.add(hold);
 										// DARTTableMap.put(currentNode.nodeId, NNLists);
@@ -914,6 +921,7 @@ public class GraphNetworkSCLAlgorithm {
 				}
 			}
 		}
+
 		return DARTTableMap;
 	}
 
