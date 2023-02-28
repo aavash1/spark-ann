@@ -27,19 +27,21 @@ public class RangeQueryAlgorithm implements Serializable {
 	public double getHeuristicRange(CoreGraph cGraph, int vertexId, double nearestDistance) {
 
 		// Find adjacent neighboring edges for the input vertex
-		List<Integer> adjacentEdges = cGraph.getAdjacencyEdgeIds(vertexId);
+
+		List<Integer> adjacentNodes = cGraph.getAdjNodeIds(vertexId);
 
 		// Find the maximum length out of all the adjacent edges
 		double maxLength = 0;
-		for (Integer edgeId : adjacentEdges) {
-			double length = cGraph.getEdgeDistance(edgeId);
+
+		for (Integer adjNodeId : adjacentNodes) {
+			double length = cGraph.getEdgeDistance(vertexId, adjNodeId);
 			if (length > maxLength) {
 				maxLength = length;
 			}
 		}
 
 		// Count the degree of the selected vertex
-		int degree = adjacentEdges.size();
+		int degree = adjacentNodes.size();
 
 		// Divide the maximum length by the degree
 		double heuristicValue = maxLength / degree;
