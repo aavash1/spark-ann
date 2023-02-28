@@ -35,6 +35,7 @@ import algorithm.ClusteringRoadObjects;
 import algorithm.NearestNeighbor;
 
 import algorithm.RandomObjectGenerator;
+import algorithm.RangeQueryAlgorithm;
 import graph.CustomPartitioner;
 import framework.CoreGraph;
 import framework.Node;
@@ -324,7 +325,7 @@ public class GraphNetworkSCLAlgorithm {
 //		}
 
 		long startTime1 = System.currentTimeMillis();
-		Map<Integer, ArrayList<holder>> DARTTableMap = findNNForEmbeddedGraph(boundaryVerticesList,
+		Map<Integer, ArrayList<holder>> DARTTableMap = getNearestNeighborForBoundaryNodes(boundaryVerticesList,
 				vertexIdPartitionIndexMap, cGraph);
 		long endTime1 = System.currentTimeMillis();
 		long totalTime1 = endTime1 - startTime1;
@@ -333,13 +334,10 @@ public class GraphNetworkSCLAlgorithm {
 
 		for (Integer borderNode : DARTTableMap.keySet()) {
 			for (holder result : DARTTableMap.get(borderNode)) {
-				if (result.getType() == true) {
-					System.out.println("Border Vertex: " + borderNode + " Nearest Query object is: "
-							+ DARTTableMap.get(borderNode).toString());
-				} else if (result.getType() == false) {
-					System.out.println("Border Vertex: " + borderNode + " Nearest Data object is: "
-							+ DARTTableMap.get(borderNode).toString());
-				}
+
+				System.out.println("Border Vertex: " + borderNode + " Nearest Data object is: "
+						+ DARTTableMap.get(borderNode).toString());
+
 			}
 
 		}
@@ -813,6 +811,74 @@ public class GraphNetworkSCLAlgorithm {
 
 	}
 
+	/**
+	 * This method looks for the nearest data, object towards the different
+	 * partitions. This method will be used to find the NN for the boundary vertex.
+	 */
+
+	public static Map<Integer, ArrayList<holder>> getNearestNeighborForBoundaryNodes(
+			LinkedList<String> boundaryVerticesList, Map<Integer, Integer> vertexIdPartitionIndexMap,
+			CoreGraph cGraph) {
+		Map<Integer, ArrayList<holder>> DARTTableMap = new HashMap<>();
+		String differentPartition = "dp";
+
+		for (String bVertex : boundaryVerticesList) {
+
+			int nodeId = Integer.parseInt(bVertex);
+			int dataObjectFound = 0;
+
+			PriorityQueue<Node> pq = new PriorityQueue<>();
+			boolean visited[] = new boolean[cGraph.getNodesWithInfo().size() + 1];
+			pq.offer(new Node(nodeId, 0.0));
+			visited[nodeId] = true;
+
+			ArrayList<holder> NNLists = new ArrayList<>();
+
+			while (!pq.isEmpty()) {
+				Node currentNode = pq.poll();
+
+				for (int adjacentNodes : cGraph.getAdjNodeIds(currentNode.getM_intNodeId())) {
+					if (!visited[adjacentNodes]) {
+						visited[adjacentNodes] = true;
+						double distance = currentNode.getM_distance();
+						int edgeId = cGraph.getEdgeId(currentNode.getM_intNodeId(), adjacentNodes);
+						List<RoadObject> objects = cGraph.getObjectsOnEdges().get(edgeId);
+
+						if (objects != null) {
+							for (RoadObject rObj : objects) {
+								if ((rObj.getType() == false) && (dataObjectFound < 2)) {
+									distance += rObj.getDistanceFromStartNode();
+
+									if (vertexIdPartitionIndexMap.get(currentNode
+											.getM_intNodeId()) != vertexIdPartitionIndexMap.get(adjacentNodes)) {
+										holder hold = new holder(rObj.getObjectId(), differentPartition, distance,
+												rObj.getType());
+
+										NNLists.add(hold);
+										DARTTableMap.put(currentNode.getM_intNodeId(), NNLists);
+										dataObjectFound += 1;
+									} else {
+										continue;
+									}
+
+								}
+							}
+
+						} else {
+							distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
+							pq.offer(new Node(adjacentNodes, distance));
+						}
+					}
+				}
+
+			}
+
+		}
+
+		return DARTTableMap;
+
+	}
+
 	public static Map<Integer, ArrayList<holder>> findNNForEmbeddedGraph(LinkedList<String> boundaryVerticesList,
 			Map<Integer, Integer> vertexIdPartitionIndexMap, CoreGraph cGraph) {
 
@@ -881,37 +947,37 @@ public class GraphNetworkSCLAlgorithm {
 										continue;
 									}
 								}
-								if ((rObj.getType() == true) && (queryObjectFound < 1)) {
-									distance += rObj.getDistanceFromStartNode();
-									// Condition 1: If currentNode and adjacentNodes are in same partition
-									if ((vertexIdPartitionIndexMap.get(currentNode
-											.getM_intNodeId()) == vertexIdPartitionIndexMap.get(adjacentNodes))
-											&& (boundaryVerticesList.contains(adjacentNodes))) {
-										// Condition 2: If the adjacentNode is not in the boundaryVertex
-
-										holder hold = new holder(rObj.getObjectId(), samePartition, distance,
-												rObj.getType());
-
-										NNLists.add(hold);
-										DARTTableMap.put(currentNode.getM_intNodeId(), NNLists);
-										queryObjectFound += 1;
-
-										// flag3qo = false;
-
-										// Otherwise, continue searching
-
-									}
-									// Otherwise, continue searching
-									else {
-										continue;
-									}
-								}
+//								if ((rObj.getType() == true) && (queryObjectFound < 1)) {
+//									distance += rObj.getDistanceFromStartNode();
+//									// Condition 1: If currentNode and adjacentNodes are in same partition
+//									if ((vertexIdPartitionIndexMap.get(currentNode
+//											.getM_intNodeId()) == vertexIdPartitionIndexMap.get(adjacentNodes))
+//											&& (boundaryVerticesList.contains(adjacentNodes))) {
+//										// Condition 2: If the adjacentNode is not in the boundaryVertex
+//
+//										holder hold = new holder(rObj.getObjectId(), samePartition, distance,
+//												rObj.getType());
+//
+//										NNLists.add(hold);
+//										DARTTableMap.put(currentNode.getM_intNodeId(), NNLists);
+//										queryObjectFound += 1;
+//
+//										// flag3qo = false;
+//
+//										// Otherwise, continue searching
+//
+//									}
+//									// Otherwise, continue searching
+//									else {
+//										continue;
+//									}
+//								}
 								// If the object is neither a different partition nor a query object, continue
-								// searching
-								else {
-									distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
-									pq.offer(new Node(adjacentNodes, distance));
-								}
+//								// searching
+//								else {
+//									distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
+//									pq.offer(new Node(adjacentNodes, distance));
+//								}
 							}
 						} else {
 							distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
@@ -924,6 +990,26 @@ public class GraphNetworkSCLAlgorithm {
 		}
 
 		return DARTTableMap;
+	}
+
+	public static void mergeResults(CoreGraph cGraph, Map<Integer, Integer> vertexIdPartitionIndexMap,
+			LinkedList<String> boundaryVerticesList, List<Tuple3<Integer, Integer, Double>> FromExecutors,
+			Map<Integer, ArrayList<holder>> DARTTable) {
+
+		
+
+		RangeQueryAlgorithm rngQ = new RangeQueryAlgorithm(cGraph, vertexIdPartitionIndexMap);
+		/**
+		 * Find the Query objects that are within the range for each boundarynodes
+		 */
+
+		for (Integer borderNodeId : DARTTable.keySet()) {
+
+			Double heuristicDistance = rngQ.getHeuristicRange(cGraph, borderNodeId,
+					DARTTable.get(borderNodeId).get(0).getDistance());
+			rngQ.returnQueryWithinRange(borderNodeId, heuristicDistance);
+
+		}
 	}
 
 //To compare the Distances

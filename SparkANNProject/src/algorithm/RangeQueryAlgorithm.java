@@ -2,16 +2,21 @@ package algorithm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
 import framework.CoreGraph;
+import framework.Node;
 import framework.RoadObject;
 import framework.cEdge;
+import scala.Tuple2;
+import scala.Tuple3;
 
 public class RangeQueryAlgorithm implements Serializable {
 
@@ -54,38 +59,33 @@ public class RangeQueryAlgorithm implements Serializable {
 
 	}
 
-	public List<Integer> returnQueryWithinRange(int selectedVertex, double rangeDistance) {
-		List<Integer> queryObjWithinRange = new ArrayList<>();
+	public List<Tuple3<Integer, Integer, Double>> returnQueryWithinRange(int selectedVertex, double rangeDistance) {
+		List<Tuple3<Integer, Integer, Double>> queryObjectsWithinRange = new ArrayList<>();
 		Set<Integer> visited = new HashSet<>();
-		Queue<Integer> queue = new LinkedList<>();
+		Queue<Tuple2<Integer, Double>> queue = new LinkedList<>();
 
 		visited.add(selectedVertex);
-		queue.offer(selectedVertex);
+		queue.offer(new Tuple2<>(selectedVertex, 0.0));
 		while (!queue.isEmpty()) {
-			int currentNode = queue.poll();
+			Tuple2<Integer, Double> current = queue.poll();
+			int currentNode = current._1;
+			double currentDistance = current._2;
 			for (int adjacentNode : cGraph.getAdjNodeIds(currentNode)) {
-
-				if (vertexIdPartitionIndexMap.get(currentNode) == vertexIdPartitionIndexMap.get(adjacentNode)) {
-					double edgeLength = cGraph.getEdgeDistance(selectedVertex, adjacentNode);
-					if (!visited.contains(adjacentNode) && edgeLength <= rangeDistance) {
-						visited.add(adjacentNode);
-						queue.offer(adjacentNode);
-						if (edgeLength < rangeDistance) {
-							RoadObject robj = cGraph.getRoadObjectOnEdge(selectedVertex, currentNode);
-							if (robj != null) {
-								if (robj.getType() != false) {
-									queryObjWithinRange.add(robj.getObjectId());
-								}
-							}
+				double edgeLength = cGraph.getEdgeDistance(currentNode, adjacentNode);
+				if (edgeLength + currentDistance <= rangeDistance && !visited.contains(adjacentNode)) {
+					visited.add(adjacentNode);
+					if (edgeLength < rangeDistance) {
+						RoadObject robj = cGraph.getRoadObjectOnEdge(currentNode, adjacentNode);
+						if (robj != null && robj.getType() != false) {
+							queryObjectsWithinRange
+									.add(new Tuple3<>(currentNode, robj.getObjectId(), edgeLength + currentDistance));
 						}
-
 					}
+					queue.offer(new Tuple2<>(adjacentNode, edgeLength + currentDistance));
 				}
-
 			}
 		}
-
-		return queryObjWithinRange;
+		return queryObjectsWithinRange;
 	}
 
 }
