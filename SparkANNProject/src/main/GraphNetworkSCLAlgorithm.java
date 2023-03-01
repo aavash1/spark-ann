@@ -1019,6 +1019,10 @@ public class GraphNetworkSCLAlgorithm {
 	public static void mergeStep2(List<Tuple3<Integer, Integer, Double>> fromMergeStep1,
 			List<Tuple3<Integer, Integer, Double>> fromExecutors, Map<Integer, ArrayList<holder>> DARTTable) {
 
+		for (Integer boundaryNodes : DARTTable.keySet()) {
+
+		}
+
 	}
 
 //To compare the Distances
