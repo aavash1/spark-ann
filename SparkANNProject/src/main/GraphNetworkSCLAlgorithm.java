@@ -36,6 +36,7 @@ import algorithm.NearestNeighbor;
 
 import algorithm.RandomObjectGenerator;
 import algorithm.RangeQueryAlgorithm;
+import breeze.linalg.all;
 import graph.CustomPartitioner;
 import framework.CoreGraph;
 import framework.Node;
@@ -332,15 +333,15 @@ public class GraphNetworkSCLAlgorithm {
 		double totalTimeInSeconds = (double) totalTime1 / 1000;
 		System.out.println("Precomputation Time: " + totalTimeInSeconds + "second");
 
-		for (Integer borderNode : DARTTableMap.keySet()) {
-			for (holder result : DARTTableMap.get(borderNode)) {
-
-				System.out.println("Border Vertex: " + borderNode + " Nearest Data object is: "
-						+ DARTTableMap.get(borderNode).toString());
-
-			}
-
-		}
+//		for (Integer borderNode : DARTTableMap.keySet()) {
+//			for (holder result : DARTTableMap.get(borderNode)) {
+//
+//				System.out.println("Border Vertex: " + borderNode + " Nearest Data object is: "
+//						+ DARTTableMap.get(borderNode).toString());
+//
+//			}
+//
+//		}
 
 		/**
 		 * Load Spark Necessary Items
@@ -605,11 +606,8 @@ public class GraphNetworkSCLAlgorithm {
 //
 //			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
 
+		mergeStep1(cGraph, vertexIdPartitionIndexMap, boundaryVerticesList, ForComparison, DARTTableMap);
 		jscontext.close();
-
-		for (Tuple3<Integer, Integer, Double> tuple : ForComparison) {
-			System.out.println(tuple.toString());
-		}
 
 	}
 
@@ -992,13 +990,12 @@ public class GraphNetworkSCLAlgorithm {
 		return DARTTableMap;
 	}
 
-	public static void mergeResults(CoreGraph cGraph, Map<Integer, Integer> vertexIdPartitionIndexMap,
-			LinkedList<String> boundaryVerticesList, List<Tuple3<Integer, Integer, Double>> FromExecutors,
-			Map<Integer, ArrayList<holder>> DARTTable) {
-
-		
+	public static List<Tuple3<Integer, Integer, Double>> mergeStep1(CoreGraph cGraph,
+			Map<Integer, Integer> vertexIdPartitionIndexMap, LinkedList<String> boundaryVerticesList,
+			List<Tuple3<Integer, Integer, Double>> FromExecutors, Map<Integer, ArrayList<holder>> DARTTable) {
 
 		RangeQueryAlgorithm rngQ = new RangeQueryAlgorithm(cGraph, vertexIdPartitionIndexMap);
+		List<Tuple3<Integer, Integer, Double>> allQueriesTobeCompared = new ArrayList<>();
 		/**
 		 * Find the Query objects that are within the range for each boundarynodes
 		 */
@@ -1007,9 +1004,21 @@ public class GraphNetworkSCLAlgorithm {
 
 			Double heuristicDistance = rngQ.getHeuristicRange(cGraph, borderNodeId,
 					DARTTable.get(borderNodeId).get(0).getDistance());
-			rngQ.returnQueryWithinRange(borderNodeId, heuristicDistance);
+			List<Tuple3<Integer, Integer, Double>> queriesTobeCompared = rngQ.returnQueryWithinRange(borderNodeId,
+					heuristicDistance);
+			allQueriesTobeCompared.addAll(queriesTobeCompared);
+
+			for (Tuple3<Integer, Integer, Double> tuple : queriesTobeCompared) {
+				System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
+			}
 
 		}
+		return allQueriesTobeCompared;
+	}
+
+	public static void mergeStep2(List<Tuple3<Integer, Integer, Double>> fromMergeStep1,
+			List<Tuple3<Integer, Integer, Double>> fromExecutors, Map<Integer, ArrayList<holder>> DARTTable) {
+
 	}
 
 //To compare the Distances

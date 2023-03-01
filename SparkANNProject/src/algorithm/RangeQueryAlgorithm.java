@@ -75,11 +75,17 @@ public class RangeQueryAlgorithm implements Serializable {
 				if (edgeLength + currentDistance <= rangeDistance && !visited.contains(adjacentNode)) {
 					visited.add(adjacentNode);
 					if (edgeLength < rangeDistance) {
-						RoadObject robj = cGraph.getRoadObjectOnEdge(currentNode, adjacentNode);
-						if (robj != null && robj.getType() != false) {
-							queryObjectsWithinRange
-									.add(new Tuple3<>(currentNode, robj.getObjectId(), edgeLength + currentDistance));
+						ArrayList<RoadObject> rObj = cGraph
+								.getAllObjectsOnGivenEdge(cGraph.getEdgeId(currentNode, adjacentNode));
+
+						for (RoadObject robj : rObj) {
+							// RoadObject robj = cGraph.getRoadObjectOnEdge(currentNode, adjacentNode);
+							if (robj != null && robj.getType() != false) {
+								queryObjectsWithinRange.add(
+										new Tuple3<>(currentNode, robj.getObjectId(), edgeLength + currentDistance));
+							}
 						}
+
 					}
 					queue.offer(new Tuple2<>(adjacentNode, edgeLength + currentDistance));
 				}
