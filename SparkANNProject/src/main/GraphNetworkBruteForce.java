@@ -286,9 +286,12 @@ public class GraphNetworkBruteForce {
 //				.set("spark.cores.max", "15").set("spark.blockManager.port", "10025")
 //				.set("spark.driver.blockManager.port", "10026").set("spark.driver.port", "10027")
 //				.set("spark.shuffle.service.enabled", "false").set("spark.dynamicAllocation.enabled", "false");
-		;
+		// ;
 
-		SparkConf config = new SparkConf().setMaster("local[*]").setAppName("Graph");
+		// SparkConf config = new SparkConf().setMaster("local[*]").setAppName("Graph");
+
+		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
 
 		try (JavaSparkContext jscontext = new JavaSparkContext(config)) {
 
@@ -490,7 +493,10 @@ public class GraphNetworkBruteForce {
 
 								}
 								straightForwardANN sn = new straightForwardANN();
+								long startTime = System.currentTimeMillis();
 								nnList = sn.call(subGraph0, true);
+								long endTime = System.currentTimeMillis();
+								double duration = endTime - startTime;
 
 //								ANNNaive ann0 = new ANNNaive();
 //								Map<Integer, Integer> result = ann0.compute(subGraph0, true);
@@ -498,9 +504,8 @@ public class GraphNetworkBruteForce {
 //								JavaRDD<Tuple3<Integer, Integer, Double>> NearestNeighborResult = jscontext
 //										.parallelize(nnList);
 //								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
-
+								System.out.println("Time taken to run Naive algorithm: " + duration + " milli-seconds");
 							}
-							System.out.println(nnList);
 
 						}
 					});

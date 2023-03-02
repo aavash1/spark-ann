@@ -56,7 +56,8 @@ import scala.reflect.ClassTag;
 
 public class GraphNetworkSCLAlgorithm {
 
-	static List<Tuple3<Integer, Integer, Double>> ForComparison = null;
+	static List<Tuple3<Integer, Integer, Double>> ForComparison = new ArrayList<>();
+	static List<Tuple3<Integer, Integer, Double>> ResultFromInitialMerging = new ArrayList<>();
 
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -359,13 +360,14 @@ public class GraphNetworkSCLAlgorithm {
 		// SparkConf config = new
 		// SparkConf().setMaster("local[*]").setAppName("ANNCLUSTERED");
 
-		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
+		// SparkConf config = new
+		// SparkConf().setAppName("ANN-SCL-FIN").setMaster("local[*]");
 
 		// For the cluster we can use any config from the below 2 config:
 		// BELOW, I repeat DOWN BELOW.
 
-//		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-//				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
+		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
 
 //		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
 //				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
@@ -605,9 +607,30 @@ public class GraphNetworkSCLAlgorithm {
 //			st.stop();
 //
 //			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
-
-		mergeStep1(cGraph, vertexIdPartitionIndexMap, boundaryVerticesList, ForComparison, DARTTableMap);
 		jscontext.close();
+
+		long startTime2 = System.currentTimeMillis();
+		List<Tuple3<Integer, Integer, Double>> mergeStep1 = initialMerging(cGraph, vertexIdPartitionIndexMap,
+				boundaryVerticesList, ForComparison, DARTTableMap);
+		ResultFromInitialMerging = mergeStep1;
+		List<Tuple3<Integer, Integer, Double>> mergeStep2 = finalMerging(ResultFromInitialMerging, ForComparison,
+				DARTTableMap);
+
+		long endTime2 = System.currentTimeMillis();
+		long totalTime2 = endTime2 - startTime2;
+		double totalMergingTimeInSeconds = (double) totalTime2 / 1000;
+		System.out.println("Final Global ANN Merging Time: " + totalMergingTimeInSeconds + "second");
+
+//		for (Tuple3<Integer, Integer, Double> tuple : mergeStep1) {
+//			System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
+//		}
+//
+//		for (Tuple3<Integer, Integer, Double> tuple : mergeStep2) {
+//			System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
+//		}
+
+		// System.out.println("The total time elapsed to finish the Distributed
+		// algorithm is: ");
 
 	}
 
@@ -889,7 +912,7 @@ public class GraphNetworkSCLAlgorithm {
 
 			int nodeId = Integer.parseInt(bVertex);
 			int dataObjectFound = 0;
-			int queryObjectFound = 0;
+
 			boolean dpFlag = true;
 
 			// List<Tuple3<String, Integer, Double>> nnList = new ArrayList<>();
@@ -945,37 +968,7 @@ public class GraphNetworkSCLAlgorithm {
 										continue;
 									}
 								}
-//								if ((rObj.getType() == true) && (queryObjectFound < 1)) {
-//									distance += rObj.getDistanceFromStartNode();
-//									// Condition 1: If currentNode and adjacentNodes are in same partition
-//									if ((vertexIdPartitionIndexMap.get(currentNode
-//											.getM_intNodeId()) == vertexIdPartitionIndexMap.get(adjacentNodes))
-//											&& (boundaryVerticesList.contains(adjacentNodes))) {
-//										// Condition 2: If the adjacentNode is not in the boundaryVertex
-//
-//										holder hold = new holder(rObj.getObjectId(), samePartition, distance,
-//												rObj.getType());
-//
-//										NNLists.add(hold);
-//										DARTTableMap.put(currentNode.getM_intNodeId(), NNLists);
-//										queryObjectFound += 1;
-//
-//										// flag3qo = false;
-//
-//										// Otherwise, continue searching
-//
-//									}
-//									// Otherwise, continue searching
-//									else {
-//										continue;
-//									}
-//								}
-								// If the object is neither a different partition nor a query object, continue
-//								// searching
-//								else {
-//									distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
-//									pq.offer(new Node(adjacentNodes, distance));
-//								}
+
 							}
 						} else {
 							distance += cGraph.getEdgeDistance(currentNode.getM_intNodeId(), adjacentNodes);
@@ -990,9 +983,19 @@ public class GraphNetworkSCLAlgorithm {
 		return DARTTableMap;
 	}
 
-	public static List<Tuple3<Integer, Integer, Double>> mergeStep1(CoreGraph cGraph,
+	public static List<Tuple3<Integer, Integer, Double>> initialMerging(CoreGraph cGraph,
 			Map<Integer, Integer> vertexIdPartitionIndexMap, LinkedList<String> boundaryVerticesList,
 			List<Tuple3<Integer, Integer, Double>> FromExecutors, Map<Integer, ArrayList<holder>> DARTTable) {
+		/**
+		 * Calculates the intial merges step.
+		 * 
+		 * @param cGraph                  takes the whole graph
+		 * @param vertexPartitionIndexMap takes the vertex partition info
+		 * @param boundaryVerticesList    for running range query on each vertex id
+		 * @param fromExecutors
+		 * @param DARTTable
+		 * @return the List of Tuple3 consisting the pruned query objects.
+		 */
 
 		RangeQueryAlgorithm rngQ = new RangeQueryAlgorithm(cGraph, vertexIdPartitionIndexMap);
 		List<Tuple3<Integer, Integer, Double>> allQueriesTobeCompared = new ArrayList<>();
@@ -1008,20 +1011,69 @@ public class GraphNetworkSCLAlgorithm {
 					heuristicDistance);
 			allQueriesTobeCompared.addAll(queriesTobeCompared);
 
-			for (Tuple3<Integer, Integer, Double> tuple : queriesTobeCompared) {
-				System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
-			}
+//			for (Tuple3<Integer, Integer, Double> tuple : queriesTobeCompared) {
+//				System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
+//			}
 
 		}
 		return allQueriesTobeCompared;
 	}
 
-	public static void mergeStep2(List<Tuple3<Integer, Integer, Double>> fromMergeStep1,
-			List<Tuple3<Integer, Integer, Double>> fromExecutors, Map<Integer, ArrayList<holder>> DARTTable) {
+	public static List<Tuple3<Integer, Integer, Double>> finalMerging(
+			List<Tuple3<Integer, Integer, Double>> fromMergeStep1, List<Tuple3<Integer, Integer, Double>> fromExecutors,
+			Map<Integer, ArrayList<holder>> DARTTable) {
 
-		for (Integer boundaryNodes : DARTTable.keySet()) {
+		/**
+		 * Calculates the final merges step.
+		 * 
+		 * @param fromMergeStep1 the first Tuple3 from the mergestep1
+		 * @param fromExecutors  the ANN result form executors
+		 * @param DARTTable      embedded graph
+		 * @return the List of Tuple3 with updated result set.
+		 */
+		List<Tuple3<Integer, Integer, Double>> finalResult = new ArrayList<>();
+
+		for (Tuple3<Integer, Integer, Double> mergeStepInit : fromMergeStep1) {
+			int borderNode = mergeStepInit._1();
+			int queryObject = mergeStepInit._2();
+			double distanceToQueryObjectFromBorderNode = mergeStepInit._3();
+
+			if (fromExecutors != null) {
+				for (Tuple3<Integer, Integer, Double> fromWorkerNodes : fromExecutors) {
+					int queryObjectFromWorker = fromWorkerNodes._1();
+					int nearestDObjFromQObj = fromWorkerNodes._2();
+					double nnDistance = fromWorkerNodes._3();
+
+					// if (queryObject == queryObjectFromWorker) {
+					for (Integer borderVertex : DARTTable.keySet()) {
+						int boundaryNode = borderVertex;
+						if ((borderNode == boundaryNode) && (queryObject == queryObjectFromWorker)) {
+							ArrayList<holder> nearestDataObject = DARTTable.get(boundaryNode);
+							for (int i = 0; i < nearestDataObject.size(); i++) {
+								double distanceToDataObjectFromBoundary = nearestDataObject.get(i).getDistance();
+
+								if (nnDistance > distanceToQueryObjectFromBorderNode
+										+ distanceToDataObjectFromBoundary) {
+									int qObj = queryObject;
+									int dObj = nearestDataObject.get(i).getObjectId();
+									double updatedDistance = distanceToQueryObjectFromBorderNode
+											+ distanceToDataObjectFromBoundary;
+									finalResult.add(new Tuple3<Integer, Integer, Double>(qObj, dObj, updatedDistance));
+
+								}
+
+							}
+						}
+						finalResult.add(new Tuple3<Integer, Integer, Double>(queryObjectFromWorker, nearestDObjFromQObj,
+								nnDistance));
+
+					}
+
+				}
+			}
 
 		}
+		return finalResult;
 
 	}
 
