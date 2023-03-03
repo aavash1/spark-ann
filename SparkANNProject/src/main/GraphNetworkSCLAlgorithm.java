@@ -10,10 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.stream.Collectors;
-
-//import org.apache.log4j.Level;
-//import org.apache.log4j.Logger;
 
 import org.apache.spark.SparkConf;
 
@@ -26,7 +22,7 @@ import org.apache.spark.api.java.function.Function3;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 
 import org.apache.spark.api.java.function.VoidFunction;
-import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.util.LongAccumulator;
 
 import algorithm.ANNClusteredOptimizedWithHeuristic;
 
@@ -36,7 +32,7 @@ import algorithm.NearestNeighbor;
 
 import algorithm.RandomObjectGenerator;
 import algorithm.RangeQueryAlgorithm;
-import breeze.linalg.all;
+
 import graph.CustomPartitioner;
 import framework.CoreGraph;
 import framework.Node;
@@ -52,7 +48,6 @@ import scala.Tuple2;
 import scala.Tuple3;
 import scala.Tuple4;
 import scala.Tuple5;
-import scala.reflect.ClassTag;
 
 public class GraphNetworkSCLAlgorithm {
 
@@ -62,11 +57,6 @@ public class GraphNetworkSCLAlgorithm {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
 
-		// Defining tags
-
-		ClassTag<Double> doubleTag = scala.reflect.ClassTag$.MODULE$.apply(Double.class);
-		ClassTag<Node> nodeTag = scala.reflect.ClassTag$.MODULE$.apply(Node.class);
-
 		/**
 		 * 1 Pass the path for loading the datasets 1.1 Dataset for graph containing
 		 * nodes and edges
@@ -74,13 +64,14 @@ public class GraphNetworkSCLAlgorithm {
 		// String nodeDatasetFile = "Dataset/TinygraphNodes.txt";
 		// String edgeDataSetFile = "Dataset/TinyGraphEdge.txt";
 
-		String nodeDatasetFile = args[0];
-		String edgeDataSetFile = args[1];
-		String metisPartitionOutputFile = args[2];
-		String partitionValue = args[3];
-		String queryObjectSize = args[4];
-		String dataObjectSize = args[5];
-		String distributionType = args[6];
+		String datasetName = args[0];
+		String nodeDatasetFile = args[1];
+		String edgeDataSetFile = args[2];
+		String metisPartitionOutputFile = args[3];
+		String partitionValue = args[4];
+		String queryObjectSize = args[5];
+		String dataObjectSize = args[6];
+		String distributionType = args[7];
 
 		if (args.length < 0) {
 			System.err.println("No arguements are passed");
@@ -125,6 +116,27 @@ public class GraphNetworkSCLAlgorithm {
 		int distributionValue = Integer.parseInt(distributionType);
 		int querySize = Integer.parseInt(queryObjectSize);
 		int dataSize = Integer.parseInt(dataObjectSize);
+
+		double SDValue = 0.0;
+		int datasetScaleFactor = 0;
+		if (datasetName.equalsIgnoreCase("cal")) {
+			SDValue = 2;
+			datasetScaleFactor = 1;
+		} else if (datasetName.equalsIgnoreCase("nw")) {
+			SDValue = 2;
+			datasetScaleFactor = 3000;
+		} else if (datasetName.equalsIgnoreCase("olden")) {
+			SDValue = 2;
+			datasetScaleFactor = 1000;
+		} else if (datasetName.equalsIgnoreCase("sanj")) {
+			SDValue = 2;
+			datasetScaleFactor = 1990;
+		} else {
+			// Handle invalid input
+			System.err.println("Invalid dataset name: " + datasetName);
+			System.exit(1);
+		}
+
 		switch (distributionValue) {
 		case 1:
 			// Both Q and Q are uniformly distributed
@@ -132,17 +144,19 @@ public class GraphNetworkSCLAlgorithm {
 			break;
 		case 2:
 			// <U,C> distribution for Q and D
-			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, 2, 1, querySize, dataSize, false);
+			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize,
+					false);
 			break;
 
 		case 3:
 			// <C,U> distribution for Q and D
-			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, 2, 1, querySize, dataSize, true);
+			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize,
+					true);
 			break;
 
 		case 4:
 			// Centroid for both Q and D
-			RandomObjectGenerator.zgenerateCCDistribution(cGraph, 2, 1, querySize, dataSize);
+			RandomObjectGenerator.zgenerateCCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize);
 
 			break;
 		}
@@ -303,29 +317,6 @@ public class GraphNetworkSCLAlgorithm {
 		 */
 		ArrayList<List<Path>> shortestPathList = runSPFAlgo(yGraph, stringBoundaryVertices, CustomPartitionSize);
 
-		// System.out.println();
-
-		/**
-		 * From the given graph create Indexing scheme using RTrees
-		 * 
-		 */
-		// RTree<Integer, Line> rtree = RTreeIndexer.createRTree(cGraph);
-		// int size = rtree.size();
-		// System.out.println("Number of entries in RTree: " + size);
-
-//		// Index the border nodes with binary search tree to prune the traversal.
-//		BinarySearchTree bst = new BinarySearchTree();
-//		int[] arrayOfBorderNodes = new int[boundaryVerticesList.size()];
-//
-//		for (int i = 0; i < boundaryVerticesList.size(); i++) {
-//			arrayOfBorderNodes[i] = Integer.parseInt(boundaryVerticesList.get(i));
-//		}
-//
-//		bst.storeArray(arrayOfBorderNodes);
-//		for (String str : boundaryVerticesList) {
-//			System.out.println("border node: " + str);
-//		}
-
 		long startTime1 = System.currentTimeMillis();
 		Map<Integer, ArrayList<holder>> DARTTableMap = getNearestNeighborForBoundaryNodes(boundaryVerticesList,
 				vertexIdPartitionIndexMap, cGraph);
@@ -347,7 +338,6 @@ public class GraphNetworkSCLAlgorithm {
 		/**
 		 * Load Spark Necessary Items
 		 */
-		// Logger.getLogger("org.apache").setLevel(Level.WARN);
 
 //		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.locality.wait", "0")
 //				.set("spark.submit.deployMode", "cluster").set("spark.driver.maxResultSize", "6g")
@@ -366,41 +356,17 @@ public class GraphNetworkSCLAlgorithm {
 		// For the cluster we can use any config from the below 2 config:
 		// BELOW, I repeat DOWN BELOW.
 
-		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
-
 //		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-//				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
-//				.set("spark.cores.max", "8");
+		// .set("spark.driver.maxResultSize", "4g").set("spark.executor.memory",
+		// "4g").set("spark.cores.max", "8");
+
+		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
+				.set("spark.cores.max", "8");
 
 		JavaSparkContext jscontext = new JavaSparkContext(config);
 
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
-//
-//		JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD = jscontext.parallelize(DARTTableMap.entrySet()
-//				.stream().map(entry -> new Tuple2<>(entry.getKey(), entry.getValue())).collect(Collectors.toList()));
-//
-////		if (DARTTableRDD != null) {
-////			DARTTableRDD.foreach(tuple -> {
-////				System.out.println("Border Vertex: " + tuple._1());
-////				System.out.println("Nearest Data Object: " + tuple._2().get(0).objectId + ", " + tuple._2().get(0).side
-////						+ ", " + tuple._2().get(0).distance);
-////			});
-////
-////		} else {
-////			System.out.println("The RDD does not exist.");
-////		}
-
-		// JavaRDD<String> BoundaryVertexRDD =
-		// jscontext.parallelize(boundaryVerticesList);
-		// JavaRDD<cEdge> BoundaryEdgeRDD = jscontext.parallelize(BoundaryEdge);
-
-//			BoundaryEdgeRDD.foreach(
-//					x -> System.out.println(x.getStartNodeId() + "-->" + x.getEndNodeId() + " : " + x.getLength()));
-//			System.out.println(" ");/SparkANN/convertedGraphs/California_Edges.txt
-
-		// Broadcast<JavaRDD<Tuple2<Integer, ArrayList<holder>>>> broadcastedRDD =
-		// jscontext.broadcast(DARTTableRDD);
 
 		JavaRDD<List<Tuple3<Integer, Integer, Double>>> pathRDD = jscontext.parallelize(shortestPathList)
 				.map(new Function<List<Path>, List<Tuple3<Integer, Integer, Double>>>() {
@@ -444,7 +410,8 @@ public class GraphNetworkSCLAlgorithm {
 		 * a array Tuple2<Object,Map<Object,Double>> VirtualGraph
 		 **/
 
-		CoreGraph embeddedGraph = createAugmentedNetwork(cGraph, pathRDD, BoundaryEdge, boundaryPairVertices);
+		// CoreGraph embeddedGraph = createAugmentedNetwork(cGraph, pathRDD,
+		// BoundaryEdge, boundaryPairVertices);
 		// embeddedGraph.printEdgesInfo();
 
 		/**
@@ -497,6 +464,9 @@ public class GraphNetworkSCLAlgorithm {
 
 		// toCreateSubgraphRDD.foreach(x -> System.out.println(x));
 
+		// final LongAccumulator totalTimeAccumulator =
+		// jscontext.sc().longAccumulator("totalTime");
+
 		toCreateSubgraphRDD.foreachPartition(
 				new VoidFunction<Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>>>() {
 
@@ -504,13 +474,8 @@ public class GraphNetworkSCLAlgorithm {
 					 * 
 					 */
 					private static final long serialVersionUID = 1L;
-					// JavaRDD<Tuple2<Integer, ArrayList<holder>>> DARTTableRDD =
-					// broadcastedRDD.getValue();
-					// private List<Map<Integer, Integer>> NNListMap = new ArrayList<>();
-					// private List<Tuple3<Integer, Integer, Double>> nnList = new ArrayList<>();
+
 					List<Tuple3<Integer, Integer, Double>> nearestNeighborList = new ArrayList<Tuple3<Integer, Integer, Double>>();
-					// CoreGraph subGraph1 = new CoreGraph();
-					// private double duration = 0.0;
 
 					@Override
 					public void call(
@@ -589,25 +554,19 @@ public class GraphNetworkSCLAlgorithm {
 							long endTime = System.currentTimeMillis();
 							double duration = endTime - startTime;
 							ForComparison = nearestNeighborList;
-							// clusteredANN can = new clusteredANN();
-							// nnList = can.call(subGraph0, true);
 
-//								ANNNaive ann0 = new ANNNaive();
-//								Map<Integer, Integer> result = ann0.compute(subGraph0, true);
-//								NNListMap.add(result);
-//								JavaRDD<Tuple3<Integer, Integer, Double>> NearestNeighborResult = jscontext
-//										.parallelize(nnList);
-//								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
-							System.out.println("Time taken to run algorithm: " + duration + " milli-seconds");
+							// totalTimeAccumulator.add((long) duration);
+							// System.out.println("Time taken to run algorithm: " + duration + "
+							// milli-seconds");
 						}
 
 					}
 				});
 
-//			st.stop();
-//
-//			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
 		jscontext.close();
+
+//		long TotalTime = totalTimeAccumulator.value();
+//		System.out.println("Total Time Taken by the accumulators to run SCL: " + TotalTime);
 
 		long startTime2 = System.currentTimeMillis();
 		List<Tuple3<Integer, Integer, Double>> mergeStep1 = initialMerging(cGraph, vertexIdPartitionIndexMap,
@@ -628,9 +587,6 @@ public class GraphNetworkSCLAlgorithm {
 //		for (Tuple3<Integer, Integer, Double> tuple : mergeStep2) {
 //			System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
 //		}
-
-		// System.out.println("The total time elapsed to finish the Distributed
-		// algorithm is: ");
 
 	}
 
@@ -1078,20 +1034,20 @@ public class GraphNetworkSCLAlgorithm {
 	}
 
 //To compare the Distances
-	static class NodeDistance implements Comparable<NodeDistance> {
-		int nodeId;
-		double distance;
-
-		public NodeDistance(int nodeId, double distance) {
-			this.nodeId = nodeId;
-			this.distance = distance;
-		}
-
-		@Override
-		public int compareTo(NodeDistance o) {
-			return Double.compare(distance, o.distance);
-		}
-	}
+//	static class NodeDistance implements Comparable<NodeDistance> {
+//		int nodeId;
+//		double distance;
+//
+//		public NodeDistance(int nodeId, double distance) {
+//			this.nodeId = nodeId;
+//			this.distance = distance;
+//		}
+//
+//		@Override
+//		public int compareTo(NodeDistance o) {
+//			return Double.compare(distance, o.distance);
+//		}
+//	}
 
 	static class holder implements Serializable {
 		/**
@@ -1156,12 +1112,6 @@ public class GraphNetworkSCLAlgorithm {
 		}
 
 	}
-
-//	public static Tuple2<Integer, Integer> getNearestDataObject() {
-//		Tuple2<Integer, Integer> NNs = null;
-//
-//		return NNs;
-//	}
 
 	static class clusteredANN extends ANNClusteredOptimizedWithHeuristic implements
 			Function3<CoreGraph, Boolean, Map<Integer, LinkedList<Integer>>, List<Tuple3<Integer, Integer, Double>>>,
@@ -1239,10 +1189,7 @@ public class GraphNetworkSCLAlgorithm {
 												Math.abs(nearestFalseObjectForRequiredQueryObject.get(rO))));
 
 									}
-//									m_nearestNeighborSets.put(requiredQueryObject,
-//											nearestFalseObjectForRequiredQueryObject);
-//									m_nearestNeighborSets.put(objectClusters.get(objectClusterIndex).getFirst(),
-//											nearestFalseObjectForRequiredQueryObject);
+
 								} else {
 									continue;
 								}
@@ -1268,21 +1215,10 @@ public class GraphNetworkSCLAlgorithm {
 
 									}
 
-//									int nearestFalseObjectForRequiredQueryObject = nn
-//											.getNearestFalseObjectIdToGivenObjOnMap(cg, requiredQueryObject);
-//									m_nearestNeighborSets.put(requiredQueryObject,
-//											nearestFalseObjectForRequiredQueryObject);
-//									m_nearestNeighborSets.put(m_objectIdClusters.get(objectClusterIndex).getLast(),
-//											nearestFalseObjectForRequiredQueryObject);
 								} else {
 									queriedObjCounter += 2;
 									boundaryStartQueryObj = m_objectIdClusters.get(objectClusterIndex).getFirst();
 									boundaryEndQueryObj = m_objectIdClusters.get(objectClusterIndex).getLast();
-
-//									int nearestFalseObjForBeginingExit = nn
-//											.getNearestFalseObjectIdToGivenObjOnMap(cg, boundaryStartQueryObj);
-//									int nearestFalseObjForEndExit = nn.getNearestFalseObjectIdToGivenObjOnMap(cg,
-//											boundaryEndQueryObj);
 
 									Map<RoadObject, Double> nearestFalseObjForBeginingExit = nn
 											.getNearestFalseObjectToGivenObjOnMap(m_graph, boundaryStartQueryObj);
@@ -1303,8 +1239,6 @@ public class GraphNetworkSCLAlgorithm {
 
 									}
 
-//									m_nearestNeighborSets.put(boundaryStartQueryObj, nearestFalseObjForBeginingExit);
-//									m_nearestNeighborSets.put(boundaryEndQueryObj, nearestFalseObjForEndExit);
 								}
 
 							} else {
@@ -1362,11 +1296,6 @@ public class GraphNetworkSCLAlgorithm {
 
 									}
 
-//									int nearestFalseObjectForRequiredQueryObject = nn
-//											.getNearestFalseObjectIdToGivenObjOnMap(gr, requiredQueryObject);
-//									m_nearestNeighborSets.put(requiredQueryObject,
-//											nearestFalseObjectForRequiredQueryObject);
-
 									for (int k = 1; k < m_objectIdClusters.get(objectClusterIndex).size() - 1; k++) {
 
 										for (RoadObject rO : nearestFalseObjectForRequiredQueryObject.keySet()) {
@@ -1377,8 +1306,6 @@ public class GraphNetworkSCLAlgorithm {
 
 										}
 
-//										m_nearestNeighborSets.put(m_objectIdClusters.get(objectClusterIndex).get(k),
-//												nearestFalseObjectForRequiredQueryObject);
 									}
 								} else {
 									continue;
@@ -1405,11 +1332,6 @@ public class GraphNetworkSCLAlgorithm {
 
 									}
 
-//									int nearestFalseObjectForRequiredQueryObject = nn
-//											.getNearestFalseObjectIdToGivenObjOnMap(gr, requiredQueryObject);
-//									m_nearestNeighborSets.put(requiredQueryObject,
-//											nearestFalseObjectForRequiredQueryObject);
-
 									for (int k = 1; k < m_objectIdClusters.get(objectClusterIndex).size() - 1; k++) {
 
 										for (RoadObject rO : nearestFalseObjectForRequiredQueryObject.keySet()) {
@@ -1420,12 +1342,8 @@ public class GraphNetworkSCLAlgorithm {
 
 										}
 
-//										m_nearestNeighborSets.put(m_objectIdClusters.get(objectClusterIndex).get(k),
-//												nearestFalseObjectForRequiredQueryObject);
 									}
 
-//									m_nearestNeighborSets.put(requiredQueryObject,
-//											nearestFalseObjectForRequiredQueryObject);
 									for (int k = m_objectIdClusters.get(objectClusterIndex).size(); k <= 1; k--) {
 
 										for (RoadObject rO : nearestFalseObjectForRequiredQueryObject.keySet()) {
@@ -1435,8 +1353,7 @@ public class GraphNetworkSCLAlgorithm {
 													Math.abs(nearestFalseObjectForRequiredQueryObject.get(rO))));
 
 										}
-//										m_nearestNeighborSets.put(m_objectIdClusters.get(objectClusterIndex).get(k),
-//												nearestFalseObjectForRequiredQueryObject);
+
 									}
 								} else {
 									queriedObjCounter += 2;
@@ -1478,8 +1395,6 @@ public class GraphNetworkSCLAlgorithm {
 
 									}
 
-									// System.out.println("index:" + objectClusterIndex);
-
 									for (int i = m_objectIdClusters.get(objectClusterIndex)
 											.indexOf(boundaryStartQueryObj)
 											+ 1; i < m_objectIdClusters.get(objectClusterIndex).size() - 1; i++) {
@@ -1508,8 +1423,7 @@ public class GraphNetworkSCLAlgorithm {
 											answerList.add(new Tuple3<Integer, Integer, Double>(currentTrueObject,
 													nearestFalseObjIdForBoundaryEnd, Math.abs(
 															distanceFromCurrentObjectToBoundaryEndNearestFalseObject)));
-//											m_nearestNeighborSets.put(currentTrueObject,
-//													nearestFalseObjIdForBoundaryEnd);
+
 										} else {
 											answerList.add(new Tuple3<Integer, Integer, Double>(currentTrueObject,
 													nearestFalseObjIdForBoundaryStart, Math.abs(
@@ -1546,10 +1460,6 @@ public class GraphNetworkSCLAlgorithm {
 										.values().toArray(new Double[0]);
 								Double[] nearestFalseObjDistBoundaryEnd = nearestFalseObjWithDistBoundaryEnd.values()
 										.toArray(new Double[0]);
-
-//								m_nearestNeighborSets.put(boundaryStartQueryObj, nearestFalseObjIdForBoundaryStart);
-//
-//								m_nearestNeighborSets.put(boundaryEndQueryObj, nearestFalseObjIdForBoundaryEnd);
 
 								for (RoadObject rO : nearestFalseObjWithDistBoundaryStart.keySet()) {
 
@@ -1592,19 +1502,12 @@ public class GraphNetworkSCLAlgorithm {
 										answerList.add(new Tuple3<Integer, Integer, Double>(currentTrueObject,
 												nearestFalseObjIdForBoundaryEnd,
 												Math.abs(distanceFromCurrentObjectToBoundaryEndNearestFalseObject)));
-//										m_nearestNeighborSets.put(currentTrueObject,
-//												nearestFalseObjIdForBoundaryEnd);
+
 									} else {
 										answerList.add(new Tuple3<Integer, Integer, Double>(currentTrueObject,
 												nearestFalseObjIdForBoundaryStart,
 												Math.abs(distanceFromCurrentObjectToBoundaryStartNearestFalseObject)));
 									}
-
-//									if (distanceFromCurrentObjectToBoundaryStartNearestFalseObject > distanceFromCurrentObjectToBoundaryEndNearestFalseObject) {
-//										m_nearestNeighborSets.put(currentTrueObject, nearestFalseObjIdForBoundaryEnd);
-//									} else {
-//										m_nearestNeighborSets.put(currentTrueObject, nearestFalseObjIdForBoundaryStart);
-//									}
 
 								}
 

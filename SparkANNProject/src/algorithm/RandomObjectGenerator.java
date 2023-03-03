@@ -40,6 +40,7 @@ import framework.*;
 
 //import testing.RandomGaussian;
 
+@SuppressWarnings("serial")
 public class RandomObjectGenerator implements Serializable {
 
 	// not complete yet
