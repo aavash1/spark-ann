@@ -22,7 +22,6 @@ import org.apache.spark.api.java.function.Function3;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 
 import org.apache.spark.api.java.function.VoidFunction;
-import org.apache.spark.util.LongAccumulator;
 
 import algorithm.ANNClusteredOptimizedWithHeuristic;
 
@@ -317,13 +316,14 @@ public class GraphNetworkSCLAlgorithm {
 		 */
 		ArrayList<List<Path>> shortestPathList = runSPFAlgo(yGraph, stringBoundaryVertices, CustomPartitionSize);
 
-		long startTime1 = System.currentTimeMillis();
+		long preCompTimeStart = System.currentTimeMillis();
 		Map<Integer, ArrayList<holder>> DARTTableMap = getNearestNeighborForBoundaryNodes(boundaryVerticesList,
 				vertexIdPartitionIndexMap, cGraph);
-		long endTime1 = System.currentTimeMillis();
-		long totalTime1 = endTime1 - startTime1;
-		double totalTimeInSeconds = (double) totalTime1 / 1000;
-		System.out.println("Precomputation Time: " + totalTimeInSeconds + "second");
+		long preCompTimeEnd = System.currentTimeMillis();
+		long preCompTotalTime = preCompTimeEnd - preCompTimeStart;
+		double preCompTotalTimeInSecond = (double) preCompTotalTime / 1000;
+		System.out.println("Precomputation Time: " + preCompTotalTime + " milli-seconds, " + preCompTotalTimeInSecond
+				+ " seconds");
 
 //		for (Integer borderNode : DARTTableMap.keySet()) {
 //			for (holder result : DARTTableMap.get(borderNode)) {
@@ -467,6 +467,8 @@ public class GraphNetworkSCLAlgorithm {
 		// final LongAccumulator totalTimeAccumulator =
 		// jscontext.sc().longAccumulator("totalTime");
 
+		long executorsStartTime = System.currentTimeMillis();
+
 		toCreateSubgraphRDD.foreachPartition(
 				new VoidFunction<Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>>>() {
 
@@ -549,11 +551,12 @@ public class GraphNetworkSCLAlgorithm {
 							Map<Integer, LinkedList<Integer>> nodeCluster = clusteringNodes.cluster(subGraph0);
 
 							clusteredANN can = new clusteredANN();
-							long startTime = System.currentTimeMillis();
+							// long startTime = System.currentTimeMillis();
 							nearestNeighborList = can.call(subGraph0, true, nodeCluster);
-							long endTime = System.currentTimeMillis();
-							double duration = endTime - startTime;
-							ForComparison = nearestNeighborList;
+							// long endTime = System.currentTimeMillis();
+							// double duration = endTime - startTime;
+							// ForComparison = nearestNeighborList;
+							ForComparison.addAll(nearestNeighborList);
 
 							// totalTimeAccumulator.add((long) duration);
 							// System.out.println("Time taken to run algorithm: " + duration + "
@@ -563,30 +566,26 @@ public class GraphNetworkSCLAlgorithm {
 					}
 				});
 
+		long executorsEndTime = System.currentTimeMillis();
+		double jobExecutionTime = executorsEndTime - executorsStartTime;
+		System.out.println("The " + CustomPartitionSize + " executors took: " + jobExecutionTime + " milli-seconds");
+
 		jscontext.close();
 
 //		long TotalTime = totalTimeAccumulator.value();
 //		System.out.println("Total Time Taken by the accumulators to run SCL: " + TotalTime);
 
-		long startTime2 = System.currentTimeMillis();
+		long mergeStepStart = System.currentTimeMillis();
 		List<Tuple3<Integer, Integer, Double>> mergeStep1 = initialMerging(cGraph, vertexIdPartitionIndexMap,
 				boundaryVerticesList, ForComparison, DARTTableMap);
 		ResultFromInitialMerging = mergeStep1;
 		List<Tuple3<Integer, Integer, Double>> mergeStep2 = finalMerging(ResultFromInitialMerging, ForComparison,
 				DARTTableMap);
 
-		long endTime2 = System.currentTimeMillis();
-		long totalTime2 = endTime2 - startTime2;
-		double totalMergingTimeInSeconds = (double) totalTime2 / 1000;
-		System.out.println("Final Global ANN Merging Time: " + totalMergingTimeInSeconds + "second");
-
-//		for (Tuple3<Integer, Integer, Double> tuple : mergeStep1) {
-//			System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
-//		}
-//
-//		for (Tuple3<Integer, Integer, Double> tuple : mergeStep2) {
-//			System.out.println(tuple._1() + " " + tuple._2() + " " + tuple._3());
-//		}
+		long mergeStepEnd = System.currentTimeMillis();
+		long totalMergingTime = mergeStepEnd - mergeStepStart;
+		double MergingDurationTotal = (double) totalMergingTime;
+		System.out.println("Final Global ANN Merging Time: " + MergingDurationTotal + "milli-second");
 
 	}
 
