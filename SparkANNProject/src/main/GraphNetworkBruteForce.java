@@ -62,13 +62,14 @@ public class GraphNetworkBruteForce {
 		// String nodeDatasetFile = "Dataset/TinygraphNodes.txt";
 		// String edgeDataSetFile = "Dataset/TinyGraphEdge.txt";
 
-		String nodeDatasetFile = args[0];
-		String edgeDataSetFile = args[1];
-		String metisPartitionOutputFile = args[2];
-		String partitionValue = args[3];
-		String queryObjectSize = args[4];
-		String dataObjectSize = args[5];
-		String distributionType = args[6];
+		String datasetName = args[0];
+		String nodeDatasetFile = args[1];
+		String edgeDataSetFile = args[2];
+		String metisPartitionOutputFile = args[3];
+		String partitionValue = args[4];
+		String queryObjectSize = args[5];
+		String dataObjectSize = args[6];
+		String distributionType = args[7];
 
 		if (args.length < 0) {
 			System.err.println("No arguements are passed");
@@ -114,6 +115,26 @@ public class GraphNetworkBruteForce {
 		int distributionValue = Integer.parseInt(distributionType);
 		int querySize = Integer.parseInt(queryObjectSize);
 		int dataSize = Integer.parseInt(dataObjectSize);
+
+		double SDValue = 0.0;
+		int datasetScaleFactor = 0;
+		if (datasetName.equalsIgnoreCase("cal")) {
+			SDValue = 2;
+			datasetScaleFactor = 1;
+		} else if (datasetName.equalsIgnoreCase("nw")) {
+			SDValue = 2;
+			datasetScaleFactor = 3000;
+		} else if (datasetName.equalsIgnoreCase("olden")) {
+			SDValue = 2;
+			datasetScaleFactor = 1000;
+		} else if (datasetName.equalsIgnoreCase("sanj")) {
+			SDValue = 2;
+			datasetScaleFactor = 1990;
+		} else {
+			// Handle invalid input
+			System.err.println("Invalid dataset name: " + datasetName);
+			System.exit(1);
+		}
 		switch (distributionValue) {
 		case 1:
 			// Both Q and Q are uniformly distributed
@@ -121,17 +142,19 @@ public class GraphNetworkBruteForce {
 			break;
 		case 2:
 			// <U,C> distribution for Q and D
-			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, 2, 1, querySize, dataSize, false);
+			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize,
+					false);
 			break;
 
 		case 3:
 			// <C,U> distribution for Q and D
-			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, 2, 1, querySize, dataSize, true);
+			RandomObjectGenerator.zgenerateCUUCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize,
+					true);
 			break;
 
-		default:
+		case 4:
 			// Centroid for both Q and D
-			RandomObjectGenerator.zgenerateCCDistribution(cGraph, 2, 1, querySize, dataSize);
+			RandomObjectGenerator.zgenerateCCDistribution(cGraph, SDValue, datasetScaleFactor, querySize, dataSize);
 
 			break;
 		}
