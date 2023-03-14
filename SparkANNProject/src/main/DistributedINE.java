@@ -45,7 +45,7 @@ import scala.Tuple4;
 import scala.Tuple5;
 import scala.reflect.ClassTag;
 
-public class GraphNetworkBruteForce {
+public class DistributedINE {
 
 	public static void main(String[] args) throws Exception {
 		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -313,8 +313,12 @@ public class GraphNetworkBruteForce {
 
 		// SparkConf config = new SparkConf().setMaster("local[*]").setAppName("Graph");
 
-		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
+		SparkConf config = new SparkConf().setAppName("DISTRIBUTED-INE").set("spark.submit.deployMode", "cluster")
+				.setMaster("yarn").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
+				.set("spark.cores.max", "8");
+
+//		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
+//				.set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g").set("spark.cores.max", "8");
 
 		try (JavaSparkContext jscontext = new JavaSparkContext(config)) {
 
@@ -435,6 +439,7 @@ public class GraphNetworkBruteForce {
 
 			// toCreateSubgraphRDD.foreach(x -> System.out.println(x));
 
+			long executorsStartTime = System.currentTimeMillis();
 			toCreateSubgraphRDD.foreachPartition(
 					new VoidFunction<Iterator<Tuple2<Object, Iterable<Tuple4<Object, Object, Double, ArrayList<RoadObject>>>>>>() {
 
@@ -516,10 +521,10 @@ public class GraphNetworkBruteForce {
 
 								}
 								straightForwardANN sn = new straightForwardANN();
-								long startTime = System.currentTimeMillis();
+								// long startTime = System.currentTimeMillis();
 								nnList = sn.call(subGraph0, true);
-								long endTime = System.currentTimeMillis();
-								double duration = endTime - startTime;
+								// long endTime = System.currentTimeMillis();
+								// double duration = endTime - startTime;
 
 //								ANNNaive ann0 = new ANNNaive();
 //								Map<Integer, Integer> result = ann0.compute(subGraph0, true);
@@ -527,7 +532,8 @@ public class GraphNetworkBruteForce {
 //								JavaRDD<Tuple3<Integer, Integer, Double>> NearestNeighborResult = jscontext
 //										.parallelize(nnList);
 //								NearestNeighborResult.saveAsTextFile("/SparkANN/Result");
-								System.out.println("Time taken to run Naive algorithm: " + duration + " milli-seconds");
+								// System.out.println("Time taken to run Naive algorithm: " + duration + "
+								// milli-seconds");
 							}
 
 						}
@@ -536,6 +542,11 @@ public class GraphNetworkBruteForce {
 //			st.stop();
 //
 //			System.out.print("Elapsed Time in Minute: " + st.elapsedMillis());
+
+			long executorsEndTime = System.currentTimeMillis();
+			double jobExecutionTime = executorsEndTime - executorsStartTime;
+			System.out.println("BRUTEFORCE!! The " + CustomPartitionSize + " executors took: " + jobExecutionTime
+					+ " milli-seconds");
 
 			jscontext.close();
 
