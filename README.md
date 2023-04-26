@@ -8,7 +8,7 @@ DistributedINE.class is the javafile to run the Incremental Network Expansion co
 GraphNetworkSCLAlgorithm.class is the javafile to run SCl algorithm
 
 Once the JAR file is created it must be moved to the main driver of the cluster. And run using spark-submit and pass the arguments
-spark-submit --class main.ClassNaame --master <master-url> --deploy-mode cluster  --executor-cores # --jars jarFilename.jar args[0] args[1] args[2] args[3] args[4] args[5] args[6] args[7]
+spark-submit --class main.ClassNaame --master yarn --deploy-mode cluster  --executor-cores # --jars jarFilename.jar args[0] args[1] args[2] args[3] args[4] args[5] args[6] args[7]
  args[0] Dataset Name
  args[1] Node Dataset File
  args[2] Edge Dataset File
