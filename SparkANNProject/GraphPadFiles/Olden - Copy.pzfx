@@ -1,0 +1,1011 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="#"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt="urn:schemas-microsoft-com:datatypes" xmlns:ps="http://graphpad.com/prism/Prism.htm" version="1.0">
+	<!--
+	XML style sheet template for formatting data and info tables from GraphPad Prism 8.0.
+	Copyright 1992-2022 GraphPad Software, LLC
+-->
+	<xsl:output method="html" version="4.0" omit-xml-declaration="yes"/>
+	<GraphPadPrismFile xmlns="http://graphpad.com/prism/Prism.htm" PrismXMLVersion="5.00">
+<Created>
+<MostRecentVersion CreatedByProgram="GraphPad Prism" CreatedByVersion="9.5.1.733" Login="Aavash" DateTime="2023-04-21T15:40:04+09:00"/>
+</Created>
+<InfoSequence>
+<Ref ID="Info0" Selected="1"/>
+<Ref ID="Info1"/>
+</InfoSequence>
+<Info ID="Info0">
+<Title>Project info 1</Title>
+<Notes/>
+<Constant><Name>Experiment Date</Name><Value>2023-03-27</Value></Constant>
+<Constant><Name>Experiment ID</Name><Value/></Constant>
+<Constant><Name>Notebook ID</Name><Value/></Constant>
+<Constant><Name>Project</Name><Value/></Constant>
+<Constant><Name>Experimenter</Name><Value/></Constant>
+<Constant><Name>Protocol</Name><Value/></Constant>
+</Info>
+
+<Info ID="Info1">
+<Title>Project info 1</Title>
+<Notes/>
+<Constant><Name>Experiment Date</Name><Value>2023-03-27</Value></Constant>
+<Constant><Name>Experiment ID</Name><Value/></Constant>
+<Constant><Name>Notebook ID</Name><Value/></Constant>
+<Constant><Name>Project</Name><Value/></Constant>
+<Constant><Name>Experimenter</Name><Value/></Constant>
+<Constant><Name>Protocol</Name><Value/></Constant>
+</Info>
+
+<TableSequence>
+<Ref ID="Table0"/>
+<Ref ID="Table3"/>
+<Ref ID="Table4"/>
+<Ref ID="Table1" Selected="1"/>
+</TableSequence>
+<Table ID="Table0" XFormat="none" YFormat="replicates" Replicates="1" TableType="TwoWay" EVFormat="AsteriskAfterNumber">
+<Title>Data 1</Title>
+<RowTitlesColumn Width="81">
+<Subcolumn>
+<d>20k</d>
+<d>30k</d>
+<d>50k</d>
+<d>70k</d>
+<d>100k</d>
+</Subcolumn>
+</RowTitlesColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-2</Title>
+<Subcolumn>
+<d>41</d>
+<d>60</d>
+<d>64</d>
+<d>88</d>
+<d>94</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-3</Title>
+<Subcolumn>
+<d>48</d>
+<d>51</d>
+<d>55</d>
+<d>65</d>
+<d>69</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="74" Decimals="0" Subcolumns="1">
+<Title>distINE-4</Title>
+<Subcolumn>
+<d>31</d>
+<d>47</d>
+<d>49</d>
+<d>55</d>
+<d>55</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="80" Decimals="0" Subcolumns="1">
+<Title>parSCL-2</Title>
+<Subcolumn>
+<d>23</d>
+<d>36</d>
+<d>36</d>
+<d>46</d>
+<d>46</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>parSCL-3</Title>
+<Subcolumn>
+<d>21</d>
+<d>36</d>
+<d>31</d>
+<d>26</d>
+<d>31</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>parSCL-4</Title>
+<Subcolumn>
+<d>16</d>
+<d>16</d>
+<d>22</d>
+<d>26</d>
+<d>29</d>
+</Subcolumn>
+</YColumn>
+</Table>
+<Table ID="Table3" XFormat="none" YFormat="replicates" Replicates="1" TableType="TwoWay" EVFormat="AsteriskAfterNumber">
+<Title>Data 2</Title>
+<RowTitlesColumn Width="81">
+<Subcolumn>
+<d>20k</d>
+<d>30k</d>
+<d>50k</d>
+<d>70k</d>
+<d>100k</d>
+</Subcolumn>
+</RowTitlesColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-2</Title>
+<Subcolumn>
+<d>46</d>
+<d>49</d>
+<d>52</d>
+<d>61</d>
+<d>75</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-3</Title>
+<Subcolumn>
+<d>38</d>
+<d>40</d>
+<d>43</d>
+<d>45</d>
+<d>52</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="74" Decimals="0" Subcolumns="1">
+<Title>distINE-4</Title>
+<Subcolumn>
+<d>30</d>
+<d>28</d>
+<d>26</d>
+<d>32</d>
+<d>38</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="80" Decimals="0" Subcolumns="1">
+<Title>parSCL-2</Title>
+<Subcolumn>
+<d>22</d>
+<d>26</d>
+<d>41</d>
+<d>43</d>
+<d>57</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>parSCL-3</Title>
+<Subcolumn>
+<d>20</d>
+<d>25</d>
+<d>26</d>
+<d>34</d>
+<d>40</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="3" Subcolumns="1">
+<Title>parSCL-4</Title>
+<Subcolumn>
+<d>12</d>
+<d>18</d>
+<d>18</d>
+<d>27</d>
+<d>29</d>
+</Subcolumn>
+</YColumn>
+</Table>
+<Table ID="Table4" XFormat="none" YFormat="replicates" Replicates="1" TableType="TwoWay" EVFormat="AsteriskAfterNumber">
+<Title>Data 3</Title>
+<RowTitlesColumn Width="81">
+<Subcolumn>
+<d>(U,U)</d>
+<d>(U,C)</d>
+<d>(C,U)</d>
+<d>(C,C)</d>
+</Subcolumn>
+</RowTitlesColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-2</Title>
+<Subcolumn>
+<d>48</d>
+<d>51</d>
+<d>52</d>
+<d>55</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>distINE-3</Title>
+<Subcolumn>
+<d>68</d>
+<d>54</d>
+<d>50</d>
+<d>49</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="74" Decimals="0" Subcolumns="1">
+<Title>distINE-4</Title>
+<Subcolumn>
+<d>48</d>
+<d>24</d>
+<d>27</d>
+<d>36</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="80" Decimals="0" Subcolumns="1">
+<Title>parSCL-2</Title>
+<Subcolumn>
+<d>44</d>
+<d>38</d>
+<d>37</d>
+<d>31</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>parSCL-3</Title>
+<Subcolumn>
+<d>45</d>
+<d>43</d>
+<d>25</d>
+<d>22</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="3" Subcolumns="1">
+<Title>parSCL-4</Title>
+<Subcolumn>
+<d>39</d>
+<d>18</d>
+<d>17</d>
+<d>18</d>
+</Subcolumn>
+</YColumn>
+</Table>
+<Table ID="Table1" XFormat="none" YFormat="replicates" Replicates="1" TableType="TwoWay" EVFormat="AsteriskAfterNumber">
+<Title>Data 4</Title>
+<RowTitlesColumn Width="81">
+<Subcolumn>
+<d>20k</d>
+<d>30k</d>
+<d>50k</d>
+<d>70k</d>
+<d>100k</d>
+</Subcolumn>
+</RowTitlesColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>SCL</Title>
+<Subcolumn>
+<d>40</d>
+<d>55</d>
+<d>105</d>
+<d>130</d>
+<d>209</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="81" Decimals="0" Subcolumns="1">
+<Title>parSCL-2</Title>
+<Subcolumn>
+<d>22</d>
+<d>26</d>
+<d>41</d>
+<d>43</d>
+<d>57</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="74" Decimals="0" Subcolumns="1">
+<Title>parSCL-3</Title>
+<Subcolumn>
+<d>20</d>
+<d>25</d>
+<d>26</d>
+<d>34</d>
+<d>40</d>
+</Subcolumn>
+</YColumn>
+<YColumn Width="80" Decimals="3" Subcolumns="1">
+<Title>parSCL-4</Title>
+<Subcolumn>
+<d>12</d>
+<d>18</d>
+<d>18</d>
+<d>27</d>
+<d>29</d>
+</Subcolumn>
+</YColumn>
+</Table>
+
+<!--Analyses, graphs and layouts as compressed binary. Don't edit this part of the file.-->
+
+<Template dt:dt="bin.base64">eNrsnQlgDNcbwN/e18xusiIJIoIgCHI5qo4VN5G6W/6OiCRuIeIK1dQRtzpapdStRWldpYoW
+VXVT1FlH1V2C1lUt+b+3M7s732aPJLvbJLyvHV9+M2/e7rxvvpk3s+99X+uGTZo0bdsgSpTO
+IIRmimaKxPjfBPSOeCnqjdfsECMg4yUIybAW4UVWHiEx3t4PJaOcSkvU1uZ6cXrrCgg1Qlzt
+vXn9SMR9UhYWoiV8aalAk3WmLynh14mcfBoVKlSoUKFChQoVKlSoUKFCxTMi5Z/TJYLncypU
+qFChQoVK4RKR4H5OhQoVKlSoUCnc93QqVKhQoUKFSuEWCYrG/+4vhtDdIgi1xY/qMdLc7J+V
+lYUe4F6BjOsZSNHCHO64MJ8OWJ5OXknokcJ44Jw0SOnTo7+DfYLxohXwTK4XJBGLyvD1cK86
+2o0cEJ/soKIKeClisx7T9xEbl7f7DOyVgJchDr5PgM16xHw93CuX9n0GJA4Jik0cHtQ2eUCP
+gdnqKYsX1uH3kbqpHpmb6pG7qR6Fm+pRuqkelZvqUbupHo2b6mHcVA/rpnq0bqpH56Z6vNxU
+j7fL9cgN7xq9nQzZHmP+60P+DOcGWHMkAiQGJAEk5WmqeTj2R+iUwlIq79+WDuKmQoUKFSpU
+8lvIfXiB+R6/Dw0T0x99qeSHiA3KdG6qn8r4jNeoR2qPoHD8WBQqyv52QzqW64bSZuPe44Ty
+/WlpOnkADOOnTKr5xzg1370fzC9t+KUFXloLmC4FYwniX3O0sWFt8nAWwr2vQ0FLFWAbKb/M
++EaPPxvwckkkRdXEMnDBt/4lkNQyA70jqAXxL37U5neN3PISn2xqQU12zscsnWAfifEs9Lf6
+nm34kob3yKOiv9W3MwziXmSQz+O2mkYk2d4qHHucfatw5jDZavqW3FYpssx6zr5Vxr+6sr1V
+jizzl8mRmI8/vY6NViE6kf9bzB8uY6clVdxaL/69GZG/jO8cJPy7B9NbxA+MLqwQfIywOrGd
+6hknF5WZ/LTr2ea+wRbzBG4kOClEAiOL+QYxsUrQ9AyyTOzWGbjmEQmMbt08Iv5UV9ttHrIl
+oc+Q1OaxjatE2GgnMd9OXk7bSWXHLZDAARy3k9x8TGK3HVNkPh+T1HxMErcdU1SBOSapS8dE
+vsmgHintGsa4eOopXT4kifmQZO46pMgCc0hydx1SVAE4pMn8xXi++eRT8l1ekbDLG2W3y2ug
+XV6bXV6Dm7u80SLaBS1sXV5h8Ji6uMs7XZS9yyvcU27u8go/VZIPXV6lwy5vKbtdTzHfara3
+km9Q2rR1iAFV5T/N0uW11W21dHntd2oVVsctctCpVbjeqVUUsk6t0uqWJXJwy8rePKQ2fL/K
+1d3KuoUkTu5WX0ty3p0t5dLR5LmbpHD7DVhkPqQgdx1SZIE5pNLuOqSoAnBI9rtJYvxVyaG2
+Tknum9gzNajPwKTkoPCg/vjhIig5Kahn8sAhqT0Gpg7hO1C3JNxikhVi+s7QVgdqBbL1zpDh
+ryTNBQvtqBTcxfQer3kuO1BcB1nkcJ3Jqc0D6d4TG5nrQFnfna3vwqYOlL03XVJBB0ooN43f
+uzd/fBz1AdQXUD9A/QENADQQUDKgQYAGA0oBNARQKqChgIYBGg5oBKCRgNIAjQI0GtC7gMYA
+eg9QOqD3AY0FNA7QeEATAGUAmghoEqDJgKYAmgpoGqDpgGYA+gDQTECzAM0GNAfQh4A+AjQX
+0MeA5gGaD+gTQAsALQT0KaBFgBYDWgJoKaBlgJYDWgFoJaDPAH0OaBWg1YDWAPoC0FpA6wB9
+CegrQOsBbQC0EdAmQJsBfQ1oC6CtgL4BtA3Qt4C2A9oBaCeg7wB9D2gXoN2A9gD6AdBeQD8C
+2gfoJ0D7AR0AdBDQIUCHAR0BdBTQMUDHAf0M6ASgk4BOAfoF0GlAZwCdBXQO0HlAFwD9Cugi
+oEuALgO6Aug3QFcB/Q7oGqDrgG4AugnoFqDbgO4A+gPQXUD3AGUCug/oAaCHgP4E9BegR4Ae
+A3oC6CmgZ4D+BvQc0D+A/gX0AtBLQFmAkEhIIkBiQBJAUkAyQHJACkBKQCpAakAaQAwgFpAW
+kA6QFyBvQHpARQD5ACoKyBeQHyB/QMUAFQdUAlAAoJKAAgGVAhQEqDSgMoDKAgoGVA5QeUAV
+AIUAqgioEqDKgEIBVQFUFVA1QGGAwgFFAIoEFAWoOqAagGoCqgXoDUC1Ab0JqA6guoDqAaoP
+yACoAaBoQA0BNQLUGFATQE0BNQPUHFALQC0BxQBqBSgW0FuAWgNqA6gtoHaA2gPqAKgjoLcB
+vQOoE6DOgP4HqAugroC6AeoOKA5QD0DxgHoCSgCUCCgJUC9AvQH1AdQXUD9A/QENADQQUDKg
+QYAGA0oBNARQKqChgIYBGg5oBKCRgNIAjQI0GtC7gMYAeg9QOqD3AY0FNA7QeEATAGUAmgho
+EqDJgKYAmgpoGqDpgGYA+gDQTECzAM0GNAfQh4A+AjQX0MeA5gGaD+gTQAsALQT0KaBFgBYD
+WgJoKaBlgJYDWgFoJaDPAH0OaBWg1YDWAPoC0FpA6wB9CegrQOsBbQC0EdAmQJsBfQ1oC6Ct
+gL4BtA3Qt4C2A9oBaCeg7wB9D2gXoN2A9gD6AdBeQD8C2gfoJ0D7AR0AdBDQIUCHAR0BdBTQ
+MUDHAf0M6ASgk4BOAfoF0GlAZwCdBXQO0HlAFwD9CugioEuALgO6Aug3QFcB/Q7oGqDrgG4A
+ugnoFqDbgO4A+gPQXUD3AGUCug/oAaCHgP4E9BegR4AeA3oC6CmgZ4D+BvQc0D+A/gX0AtBL
+QFmAyK9Lguc/QGJAEkBSQDJAckAKQEpAKkBqQBpADCAWkBaQDpAXIG9AekBFAPkAKgrIF5Af
+IH9AxQAVB1QCUACgkoACAZUCFASoNKAygMoCCgZUDlB5QBUAhQCqCKgSoMqAQgFVAVQVUDVA
+YYDCAUUAigQUBag6oBqAagKqBegNQLUBvQmoDqC6gOoBqg/IAKgBoGhADQE1AtQYUBNATQE1
+A9QcUAtALQHFAGoFKBbQW4BaA2oDqC2gdoDaA+oAqCOgtwG9A6gToM6A/geoC6CugLoB6g4o
+DlAPQPGAegJKAJQIKAlQL0C9AfUB1BdQP0D9AQ0ANBBQMqBBgAYDSgE0BFAqoKGAhgEaDmgE
+oJGA0gCNAjQa0LuAxgB6D1A6oPcBjQU0DtB4QBMAZQCaCGgSoMmApgCaCmgaoOmAZgD6ANBM
+QLMAzQY0B9CHgD4CNBfQx4DmAZoP6BNACwAtBPQpoEWAFgNaAmgpoGWAlgNaAWgloM8AfQ5o
+FaDVgNYA+gLQWkDrAH0J6CtA6wFtALQR0CZAmwF9DWgLoK2AvgG0DdC3gLYD2gFoJ6DvAH0P
+aBeg3YD2APoB0F5APwLaB+gnQPsBHQB0ENAhQIcBHQF0FNAxQMcB/QzoBKCTgE4B+gXQaUBn
+AJ0FdA7QeUAXAP0K6CKgS4AuA7oC6DdAVwH9DugaoOuAbgC6CegWoNuA7gD6A9BdQPcAZQK6
+D+gBoIeA/gT0F6BHgB4DegLoKaBngP4G9BzQP4D+BfQC0EtAWYDIoDbB8x8gMSAJICkgGSA5
+IAUgJSAVIDUgDSAGEAtIC0gHyAuQNyA9oCKAfAAVBeQLyA+QP6BigIoDKgEoAFBJQIGASgEK
+AlQaUBlAZQEFAyoHqDygCoBCAFUEVAlQZUChgKoAqgqoGqAwQOGAIgBFAooCVB1QDUA1AdUC
+9Aag2oDeBFQHUF1A9QDVB2QA1ABQNKCGgBoBagyoCaCmgJoBag6oBaCWgGIAtQIUC+gtQK0B
+tQHUFlA7QO0BdQDUEdDbgN4B1AlQZ0D/A9QFUFdA3QB1BxQHqAegeEA9ASUASgSUBKgXoN6A
++gDqC6gfoP6ABgAaCCgZ0CBAgwGlABoCKBXQUEDDAA0HNALQSEBpgEYBGg3oXUBjAL0HKB3Q
++4DGAhoHaDygCYAyAE0ENAnQZEBTAE0FNA3QdEAzAH0AaCagWYBmA5oD6ENAHwGaC+hjQPMA
+zQf0CaAFgBYC+hTQIkCLAS0BtBTQMkDLAa0AtBLQZ4A+B7QK0GpAawB9AWgtoHWAvgT0FaD1
+gDYA2ghoE6DNgL4GtAXQVkDfANoG6FtA2wHtALQT0HeAvge0C9BuQHsA/QBoL6AfAe0D9BOg
+/YAOADoI6BCgw4COADoK6Big44B+BnQC0ElApwD9Aug0oDOAzgI6B+g8oAuAfgV0EdAlQJcB
+XQH0G6CrgH4HdA3QdUA3AN0EdAvQbUB3AP0B6C6ge4AyAd0H9ADQQ0B/AvoL0CNAjwE9AfQU
+0DNAfwN6DugfQP8CegHoJaAsnuCEXNOcpuwTcnWmabN4bXXTOuM8O63V1Fex1dRXqWCWi9bm
+PLuG/By1XE2BJdVrBZNnlG6eAttaEGlB2AA6xEVxFfPfSsN/ywr89yI1VOU/k0yhrS2Y/mqa
+mqhz0mRKh01GvlXHHv2HJrrUXjI3t5ePVV0a8zFP5ktnn7soEYZ4iKAhHvI5xANdXs2oZt42
+Qzx4o/yNaqZ3GOKhCHIU1cwHOYpqVhQ5imrmixxFNfMzh4ewDvHgbXXcEgchHrxdD/HgXchC
+POitpttLHEy3z948eY9bZt1OzuJhOQ/0IDMfUxG3HVNkPh+TJXqUj9uOKarAHFNRl44pzwE5
+vHMZ6iE3h+TrrkOKLDCH5OeuQ4oqAIdkPyCHVNipjaSdWtqppZ3aXHZqHa0zua6/zU6tv9Wn
+/ted2mIOO7XFHXZqSzjs1AY47NSWdNipDUTZY55x12R/q+OWOujU+rveqfX3cKe2lqBjanqu
+EfHa9MJDzf8t4V/EyKw6ssWsblNSB7cpfzd2ZP092JEt7rZjisznY7J0J0q47ZiiCswxBbh0
+THnuyPp7sNdX0l2HFFlgDinQXYcUVQAOyVZHVp/zALwMovHjbHVkGdx8RVAYGR8hH8GksXV0
+It54USgCX49l+L+P+M6tGCXg0iI+4+giYwQob8H5ZWpfEZ9WkUhpTaf90b4tDJYukWXbKtBV
+UpljiRFJwJ8eIfjOuwymL29dE/cJtQ0+4ETzNe4tNf+kQToppQR/Bwn+Li34e4kx5pXp9yDh
+3raklNV2YUtkWX2Kre2lnWyfZXwNIkWWLAampSjYouC/q8r4+Fonm8WD+dZ7UJ/TPgJWKrif
+QUT8/UYDagjhSgb1NYAKDckC3is2nUnkXxZpbX6HTrCGXfHZamD5H6688Fm1MtuLP3tdYEdC
+yuStJltlhDUFuVTTunTreHqrUSiyRNPLiRevMn4HsZNSOatXnat6Sel1BngMohx/lihXn5Xz
+ejW5qldj4xjEOf4sca4+K+f1Mrmql7E6BtErcC6JXoFzSfQKnEviV+BcEr8C55K40J5L5dIz
+EDL39iw9D7/+u337706qT6pQ8kmJyVGLjE8YYSjJXI9pH4sWCz7X2R09Q/D3cOMRVkFk+Iva
++J4hUMS90uN4ooiwyMyPxITFZu4hJSwx81EZYVLnBFTG0ZeoX8b8bbhvPpHXk3i9DlXkj6Wq
+vU4M90XDGpA3YuX4ZlXb7VylG5u1s/lk4k7rMGNIXdgZFJ4IYodvGp03q5NmQB5qBg1thozs
+ryBx53x89ZbT3pp/ur6pc23fyZobsl/actIA9poBudcp7NVhqxlYh08c66W5OxtMzSDyVDN4
+6mzQ0mbIQHDwIve8KWUrDO0eeKi+5YnTXjM0t3ttKHRO4eXWs8G1S2Q+ng3er3sz+Ju7lDrz
+R/hYehJZlkxsMxuUNf4Qo87WuTZtL205qwReFpQeaCw3TJapGab18fpEpmfaah/ouBeLDXQk
+PPF4/utfMIY7Vwu6nabXX9bLg//qlSh4WfPS/IKOe8dNNpm2+6AR2V6XO3+0ETk4XYIMXNup
+kFTxubY6G6cLURzSerN1dF6KTdqKbHudCJ+QuW+7sHxrO+Ov5+kzja8lRfiBQcR/d9NvtS3s
+PmpE8c7WyKCVygQX3bi4OONCPoho7kcKJZKjKHy2khfTtURS3M8xmN7Z4m0qGy1e0eyCC40B
+c4sBO6WDo+EeIB09aJBiWaJsT1Vyq7fipgplCA5sF54YpnIqq/e5tp48RfbfM2bhxsniG8u4
+nmjTNyXF0tPTeSbv1A0NSIcR/78LLybdgO9H7jJpy2eKze/bQwxh3BOQfDAKN/51HNXKk2s4
+elNqcY0t8uHam0yc7rx8gfYHpo5uj3yc9gLjSdc4j814HPemfmAsuo6OW19Hl1fXUJhdgzxx
+lsrmGvPsukYNzjXSY6xcw1bTEdeQFkTXkOajawj/tl7IpiVLVrjVNWrKl/KuMRbV86BrtFXs
+047Dd41hijva7viu0U1xQjuc9bRr3Odd4r7bXENldg1yepbO5hr/vrRXG/8zFapr5Rq2XIS4
+hrgguoY4H13D9MuqwE2Aa5w6dcqtrnFS3pZ3jUBRaQ+6Rm/5AWY+vmtMk99jhuK7Rqr8F2a6
+R+8a07ALXMAPEkMZiyYuMc0l15CbXUOOv4kS/M5A/rhh967RyPwLbs7uGl68ayAPuQbKmWuI
+gGvo7RTPqWsoPXjXsLC1a+zKk2vclr0l5lwjCg32mGso8XOav457Tquj457T6ui45zRPuUYK
+7wJpLNQpLt81uCdWFbCpynxuGBpUMh6Pin/mNQ04klhKGDz1TKdEo/Dz8AJ5nG4xfh4ejtuY
+PA8TLfZoO49goHa9nZkctzOTD+0sRoyqtuaKugYTpuqm2aHWM81UwzQr1M81JPRS7ts5QuK8
+lcLwoffHyw61RQepufVB6ry0s+lNS7j5olrGPBPK+odKwbsJ8/4+qJrxSEdncdeSSXjbYC7E
+FF+icrre+Bnkva6cy2hmlFDjQys3hq4Kn5tayn+e1mjl9TVIK4uMe1+TkteQDH99TsD79sP/
+Vs6TdS31OrLuecVhnT+zxuul4oHukSbDy1ep9PpVM9CLJN3hrRuXCy8Sobj//s2I6RWjq9bd
+hzjrkhR3tqyrMVrXj8v7yFuXzGqKHTogPjGFpNsdPDQxZWRQcjxJxTukCioPuqzcODqN0ejP
+KnnG6JbaHRn9ijSO2Strr5PKxjNLZGG6ANlCZhK+bQmMvitXRr9yBX+R9nh/ouPwoeyVWTRZ
+j7tIKIzX4/H6JQJN1gdg7c/rhXj9JIH219kzOmM2OonElDej+/EuXcbs0pH8npzRGaPRvYDR
+SW2cqVP7DEgMChmS2LNiFaM9ROYBvQqb1pYbv2l+2HwE2pZ1RdRbtBBdztohaiTajJ5mrRCR
+8aqmy7h0VW4u49JVJOvDNrydaJKRiGRtJZrkayXrSTaQy7wmmapIdk+TJutJ9pWnvCbfg2Sr
+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</Template></GraphPadPrismFile>
+	<xsl:template match="ps:Info">
+		<a><xsl:attribute name="name"><xsl:value-of select="@ID"/></xsl:attribute></a>
+		<table border="0">
+			<tr>
+				<td><xsl:apply-templates select="ps:Title"/> </td><td width="20"></td><td width="50%"><b>Notes</b></td>
+			</tr>
+			<tr>
+				<td valign="top">
+					<table BORDER="1" CELLSPACING="0">
+						<tr><th>Constant</th><th>Name</th></tr>
+						<xsl:for-each select="ps:Constant">
+							<tr>
+								<td><xsl:apply-templates select="ps:Name"/> </td>
+								<td><xsl:apply-templates select="ps:Value"/> </td>
+							</tr>
+						</xsl:for-each>
+					</table>
+				</td>
+				<td></td>
+				<td valign="top">
+					<xsl:apply-templates select="ps:Notes"/>
+				</td>
+			</tr>
+		</table>
+	</xsl:template>
+	<xsl:template match="ps:GraphPadPrismFile">
+		<HTML>
+			<BODY>
+				<xsl:variable name="Chars" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+				<font color="#999999">
+					<p align="center">This file can be opened by <a href="http://www.graphpad.com">GraphPad</a> Prism (version 
+	<xsl:value-of select="@PrismXMLVersion"/> or later). </p></font><hr/>
+         This file contains <xsl:value-of select="count(ps:Table|ps:HugeTable|ps:Table1024)"/> data tables and 
+	<xsl:value-of select="count(ps:Info)+count(ps:Table|ps:HugeTable|ps:Table1024/ps:Info)"/> info tables:
+
+	<dir>
+					<xsl:for-each select="ps:Info">
+						<li>
+							<a>
+								<xsl:attribute name="href">#<xsl:value-of select="@ID"/></xsl:attribute>
+								<xsl:apply-templates select="ps:Title"/>
+							</a>
+						</li>
+					</xsl:for-each>
+					<xsl:for-each select="ps:Table|ps:HugeTable|ps:Table1024">
+						<li>
+							<a>
+								<xsl:attribute name="href">#<xsl:value-of select="@ID"/></xsl:attribute>
+								<xsl:apply-templates select="ps:Title"/>
+							</a>
+							<dir>
+								<xsl:for-each select="ps:Info">
+									<li>
+										<a>
+											<xsl:attribute name="href">#<xsl:value-of select="@ID"/></xsl:attribute>
+											<xsl:apply-templates select="ps:Title"/>
+										</a>
+									</li>
+								</xsl:for-each>
+							</dir>
+						</li>
+					</xsl:for-each>
+				</dir>
+				<hr/>
+				<xsl:apply-templates select="ps:Info"/>
+				<br/>
+				<hr/>
+				<br/>
+				<xsl:for-each select="ps:Table|ps:HugeTable|ps:Table1024">
+					<xsl:apply-templates select="ps:Title"/>
+					<a><xsl:attribute name="name"><xsl:value-of select="@ID"/></xsl:attribute></a>
+					<xsl:variable name="width" select="100 div count (*/ps:Subcolumn)"/>
+					<xsl:variable name="xFormat" select="./@XFormat"/>
+					<xsl:variable name="yFormat" select="./@YFormat"/>
+					<xsl:variable name="nRepl" select="./@replicates"/>
+					<xsl:variable name="isXAdvancedColumn" select="boolean(($xFormat='date' or $xFormat='time' or $xFormat='startenddate') and count(ps:XAdvancedColumn) &gt; 0)"/>
+					<xsl:variable name="isXAdvancedSubcol" select="boolean(($xFormat='startenddate') or count(ps:XAdvancedColumn/ps:Subcolumn/ps:Title) &gt; 0)"/>
+					<xsl:variable name="isXSubcol" select="boolean(($xFormat='error' or count(ps:XColumn/ps:Subcolumn/ps:Title) &gt; 0) and not ($isXAdvancedColumn))"/>
+					<xsl:variable name="isYSubcol" select="boolean(($yFormat='replicates'and ./@Replicates&gt;1) or &#xA;						 ($yFormat!='text'and $yFormat!='replicates') or &#xA;						count(ps:YColumn/ps:Subcolumn/ps:Title)&gt;0)"/>
+					<xsl:variable name="isYSubColNameCustom" select="boolean($isYSubcol and count(ps:SubColumnTitles)&gt;0)"/>
+					<TABLE BORDER="1" CELLSPACING="0">
+						<TR>
+							<xsl:for-each select="ps:RowTitlesColumn">
+								<TD align="center">
+									<xsl:attribute name="rowspan">
+										<xsl:if test="$isXSubcol or $isXAdvancedSubcol or $isYSubcol">2</xsl:if>
+									</xsl:attribute><BR/>
+								</TD>
+							</xsl:for-each>
+							<xsl:if test="not ($isXAdvancedColumn)">
+								<xsl:for-each select="ps:XColumn">
+									<TD align="center">
+										<xsl:attribute name="rowspan">
+											<xsl:if test="$isYSubcol and not($isXSubcol)">2</xsl:if>
+										</xsl:attribute>
+										<xsl:attribute name="colspan"><xsl:value-of select="./@Subcolumns"/></xsl:attribute>
+						 
+						<xsl:apply-templates select="ps:Title"/>
+										<xsl:if test="count(ps:Title)=0 or ps:Title=''">X-Title</xsl:if>				
+						 
+					</TD>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:if test="$isXAdvancedColumn">
+								<xsl:for-each select="ps:XAdvancedColumn">
+									<TD align="center">
+										<xsl:attribute name="rowspan">
+											<xsl:if test="$isYSubcol and not($isXAdvancedSubcol)">2</xsl:if>
+										</xsl:attribute>
+										<xsl:attribute name="colspan"><xsl:value-of select="./@Subcolumns"/></xsl:attribute>
+						 
+						<xsl:apply-templates select="ps:Title"/>
+										<xsl:if test="count(ps:Title)=0 or ps:Title=''">X-Title</xsl:if>				
+						 
+					</TD>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:for-each select="ps:YColumn">
+								<xsl:variable name="DefColName2" select="(position()-1) mod 26"/>
+								<xsl:variable name="DefColName1" select="(position()-1-$DefColName2) div 26"/>
+								<TD align="center">
+									<xsl:attribute name="colspan"><xsl:value-of select="./@Subcolumns"/></xsl:attribute>
+									<xsl:attribute name="rowspan">
+										<xsl:if test="($isXSubcol or $isXAdvancedSubcol) and not($isYSubcol)">2</xsl:if>
+									</xsl:attribute>
+					 
+					<xsl:apply-templates select="ps:Title"/>
+									<xsl:if test="count(ps:Title)=0 or ps:Title=''">
+										<xsl:value-of select="'Data Set-'"/>
+										<xsl:if test="$DefColName1 &gt; 0">
+											<xsl:value-of select="substring($Chars,$DefColName1,1)"/>
+										</xsl:if>
+										<xsl:value-of select="substring($Chars,$DefColName2+1,1)"/>
+									</xsl:if>
+					 				
+	   			</TD>
+							</xsl:for-each>
+						</TR>
+						<xsl:if test="$isXSubcol or $isXAdvancedSubcol or $isYSubcol">
+							<TR>
+								<xsl:if test="$isXSubcol">
+									<xsl:for-each select="ps:XColumn">
+										<xsl:for-each select="ps:Subcolumn">
+											<TD align="center"> 
+					 
+					<xsl:apply-templates select="ps:Title"/>
+												<xsl:if test="count(ps:Title)=0 or ps:Title=''">
+													<xsl:choose>
+														<xsl:when test="position()=1"><B>X</B></xsl:when>
+														<xsl:when test="position()=2"><B>Err.Bar</B></xsl:when>
+													</xsl:choose>
+												</xsl:if>				
+					 
+				</TD>
+										</xsl:for-each>
+									</xsl:for-each>
+								</xsl:if>
+								<xsl:if test="$isXAdvancedSubcol">
+									<xsl:for-each select="ps:XAdvancedColumn">
+										<xsl:for-each select="ps:Subcolumn">
+											<TD align="center"> 
+					 
+					<xsl:apply-templates select="ps:Title"/>
+												<xsl:if test="count(ps:Title)=0 or ps:Title=''">
+													<xsl:choose>
+														<xsl:when test="position()=1"><B>Starting Date</B></xsl:when>
+														<xsl:when test="position()=2"><B>Ending Date</B></xsl:when>
+													</xsl:choose>
+												</xsl:if>				
+					 
+				</TD>
+										</xsl:for-each>
+									</xsl:for-each>
+								</xsl:if>
+								<xsl:if test="$isYSubcol">
+									<xsl:for-each select="ps:YColumn">
+										<xsl:variable name="DefColName2" select="(position()-1) mod 26"/>
+										<xsl:variable name="DefColName1" select="(position()-1-$DefColName2) div 26"/>
+										<xsl:variable name="YColumnNdx" select="position()"/>
+										<xsl:for-each select="ps:Subcolumn">
+											<TD align="center">
+					 
+					<xsl:apply-templates select="ps:Title"/>
+												<xsl:if test="count(ps:Title)=0 or ps:Title=''">
+													<xsl:if test="$yFormat='replicates' or $yFormat='text'">
+														<B>
+															<xsl:if test="$DefColName1 &gt; 0">
+																<xsl:value-of select="substring($Chars,$DefColName1,1)"/>
+															</xsl:if>
+															<xsl:choose>
+																<xsl:when test="$isYSubColNameCustom">
+																	<xsl:variable name="subColCustomNamePos" select="position()"/>
+																	<xsl:for-each select="../../ps:SubColumnTitles/ps:Subcolumn">
+																		<xsl:if test="position()=$subColCustomNamePos">
+																			<xsl:choose>
+																				<xsl:when test="../../ps:SubColumnTitles/@OwnSet='1'">
+																					<xsl:variable name="DItemsCount" select="count(./ps:d)"/>
+																					<xsl:choose>
+																						<xsl:when test="$DItemsCount&lt;$YColumnNdx or ./ps:d[$YColumnNdx]=''">
+																							<xsl:value-of select="substring($Chars,$DefColName2+1,1)"/>:Y<xsl:value-of select="position()"/>
+																						</xsl:when>
+																						<xsl:otherwise>
+																							<xsl:apply-templates select="./ps:d[$YColumnNdx]"/>
+																						</xsl:otherwise>
+																					</xsl:choose>
+																				</xsl:when>
+																				<xsl:when test="../../ps:SubColumnTitles/@OwnSet='0'">
+																					<xsl:variable name="DItemsCount" select="count(./ps:d)"/>
+																					<xsl:choose>
+																						<xsl:when test="$DItemsCount&lt;1 or ./ps:d[1]=''">
+																							<xsl:value-of select="substring($Chars,$DefColName2+1,1)"/>:Y<xsl:value-of select="position()"/>
+																						</xsl:when>
+																						<xsl:otherwise>
+																							<xsl:apply-templates select="./ps:d[1]"/>
+																						</xsl:otherwise>
+																					</xsl:choose>
+																				</xsl:when>
+																				<xsl:otherwise>
+																					<xsl:apply-templates select="ps:d"/>
+																					<xsl:if test="ps:d=''">
+																						<xsl:value-of select="substring($Chars,$DefColName2+1,1)"/>:Y<xsl:value-of select="position()"/>
+																					</xsl:if>
+																				</xsl:otherwise>
+																			</xsl:choose>
+																		</xsl:if>
+																	</xsl:for-each>
+																</xsl:when>
+																<xsl:otherwise>
+																	<xsl:value-of select="substring($Chars,$DefColName2+1,1)"/>:Y<xsl:value-of select="position()"/>
+																</xsl:otherwise>
+															</xsl:choose>
+														</B>
+													</xsl:if>
+													<xsl:if test="$yFormat!='replicates' and $yFormat!='text'">
+														<xsl:if test="not($yFormat='replicates' or $yFormat='text')">
+															<xsl:if test="position()=1"><B>Mean</B></xsl:if>
+															<xsl:if test="position()!=1">
+																<xsl:choose>
+																	<xsl:when test="$yFormat='SD'">
+																		<B>SD</B>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='SE'">
+																		<B>SEM</B>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='CV'">
+																		<B>%CV</B>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='SDN'">
+																		<xsl:if test="position()=2"><B>SD</B></xsl:if>
+																		<xsl:if test="position()=3"><B>N</B></xsl:if>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='SEN'">
+																		<xsl:if test="position()=2"><B>SEM</B></xsl:if>
+																		<xsl:if test="position()=3"><B>N</B></xsl:if>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='CVN'">
+																		<xsl:if test="position()=2"><B>%CV</B></xsl:if>
+																		<xsl:if test="position()=3"><B>N</B></xsl:if>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='low-high'">
+																		<xsl:if test="position()=2"><B>+Error</B></xsl:if>
+																		<xsl:if test="position()=3"><B>-Error</B></xsl:if>
+																	</xsl:when>
+																	<xsl:when test="$yFormat='upper-lower-limits'">
+																		<xsl:if test="position()=2"><B>UpperLimit</B></xsl:if>
+																		<xsl:if test="position()=3"><B>LowerLimit</B></xsl:if>
+																	</xsl:when>
+																</xsl:choose>
+															</xsl:if>
+														</xsl:if>
+													</xsl:if>
+												</xsl:if>
+					 				
+	   			</TD>
+										</xsl:for-each>
+									</xsl:for-each>
+								</xsl:if>
+							</TR>
+						</xsl:if>
+						<TR>
+							<xsl:for-each select="ps:RowTitlesColumn/ps:Subcolumn">
+								<td valign="top" nowrap="1">
+									<xsl:attribute name="width"><xsl:value-of select="$width"/>%</xsl:attribute>
+									<xsl:apply-templates select="ps:d"/>
+									<xsl:if test="count(ps:d)=0"><br/></xsl:if>
+								</td>
+							</xsl:for-each>
+							<xsl:if test="not($isXAdvancedColumn)">
+								<xsl:for-each select="ps:XColumn/ps:Subcolumn">
+									<td valign="top" nowrap="1">
+										<xsl:attribute name="width"><xsl:value-of select="$width"/>%</xsl:attribute>
+										<xsl:apply-templates select="ps:d"/>
+										<xsl:if test="count(ps:d)=0"><br/></xsl:if>
+									</td>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:if test="$isXAdvancedColumn">
+								<xsl:for-each select="ps:XAdvancedColumn/ps:Subcolumn">
+									<td valign="top" nowrap="1">
+										<xsl:attribute name="width"><xsl:value-of select="$width"/>%</xsl:attribute>
+										<xsl:apply-templates select="ps:d"/>
+										<xsl:if test="count(ps:d)=0"><br/></xsl:if>
+									</td>
+								</xsl:for-each>
+							</xsl:if>
+							<xsl:for-each select="ps:YColumn/ps:Subcolumn">
+								<td valign="top" nowrap="1">
+									<xsl:attribute name="width"><xsl:value-of select="$width"/>%</xsl:attribute>
+									<xsl:apply-templates select="ps:d"/>
+									<xsl:if test="count(ps:d)=0"><br/></xsl:if>
+								</td>
+							</xsl:for-each>
+						</TR>
+					</TABLE>
+					<br/>
+					<xsl:apply-templates select="ps:Info"/>
+					<br/>
+					<hr/>
+					<br/>
+				</xsl:for-each>
+			</BODY>
+		</HTML>
+	</xsl:template>
+	<!--<xsl:template match="ps:d">
+	<xsl:choose>
+		<xsl:when test="@Excluded and string-length(text())" >
+		    <font color="#0000ee">
+	      		<xsl:apply-templates select="node()"/>*		
+		    </font>
+		</xsl:when>
+	    <xsl:otherwise>
+			<xsl:apply-templates select="node()"/>
+		</xsl:otherwise>
+	</xsl:choose>
+	<xsl:if test="position()!=last()"><br/></xsl:if>
+</xsl:template>-->
+	<xsl:template match="ps:d">
+		<xsl:choose>
+			<xsl:when test="@Excluded and string-length(text())">
+				<xsl:choose>
+					<xsl:when test="../../../@EVFormat='AsteriskAfterNumber'">
+						<font color="#0000ee">
+							<xsl:apply-templates select="node()"/>*
+						</font>
+					</xsl:when>
+					<xsl:when test="../../../@EVFormat='Blank'">
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select="node()"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="node()"/>
+			</xsl:otherwise>
+		</xsl:choose>
+		<xsl:if test="position()!=last()"><br/></xsl:if>
+	</xsl:template>
+	<xsl:template match="ps:Title">
+		<b><xsl:apply-templates select="node()"/></b>
+	</xsl:template>
+	<xsl:template match="node()">
+		<xsl:param name="DoNotUseBR" select="0"/>
+		<xsl:choose>
+			<xsl:when test="name()='BR' and $DoNotUseBR=1">
+				<div/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy>
+					<xsl:apply-templates select="node()">
+						<xsl:with-param name="DoNotUseBR" select="$DoNotUseBR"/>
+					</xsl:apply-templates>
+				</xsl:copy>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="ps:Font">
+		<xsl:param name="DoNotUseBR" select="0"/>
+		<font>
+			<xsl:if test="@Size">
+				<xsl:attribute name="STYLE">font-size:<xsl:value-of select="@Size"/>pt</xsl:attribute>
+			</xsl:if>
+			<xsl:copy-of select="@*"/>
+			<xsl:apply-templates select="node()">
+				<xsl:with-param name="DoNotUseBR" select="$DoNotUseBR"/>
+			</xsl:apply-templates>
+		</font>
+	</xsl:template>
+	<xsl:template match="ps:LineStyles">
+		<div>
+			<xsl:if test="@align">
+				<xsl:attribute name="align"><xsl:value-of select="@align"/></xsl:attribute>
+			</xsl:if>
+			<xsl:if test="@spacing">
+				<xsl:variable name="sp" select="@spacing"/>
+				<xsl:attribute name="style">margin-bottom:<xsl:value-of select="(@spacing -100) div 5"/>pt</xsl:attribute>
+			</xsl:if>
+			<xsl:apply-templates select="node()">
+				<xsl:with-param name="DoNotUseBR" select="1"/>
+			</xsl:apply-templates>
+		</div>
+	</xsl:template>
+	<xsl:template match="ps:Notes">
+		<xsl:apply-templates select="node()">
+			<xsl:with-param name="DoNotUseBR" select="1"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="/">
+		<HTML>
+			<BODY>
+				<xsl:apply-templates select="//ps:GraphPadPrismFile"/>
+			</BODY>
+		</HTML>
+	</xsl:template>
+</xsl:stylesheet>
