@@ -333,9 +333,9 @@ public class GraphNetworkSCLAlgorithm {
 		System.out.println("Precomputation Time: " + preCompTotalTime + " milli-seconds, " + preCompTotalTimeInSecond
 				+ " seconds");
 
-		long size = estimateSize(DARTTableMap);
+	//	long size = estimateSize(DARTTableMap);
 
-		System.out.println("Estimated size of map in bytes: " + size);
+	//	System.out.println("Estimated size of map in bytes: " + size);
 
 //		for (Integer borderNode : DARTTableMap.keySet()) {
 //			for (holder result : DARTTableMap.get(borderNode)) {
@@ -1044,36 +1044,7 @@ public class GraphNetworkSCLAlgorithm {
 
 	}
 
-	public static long estimateSize(Map<Integer, ArrayList<holder>> map) {
-		long size = 0;
-
-		// Estimate the size of the map object
-		size += getObjectSize(map);
-
-		// Estimate the size of the map's elements
-		for (Map.Entry<Integer, ArrayList<holder>> entry : map.entrySet()) {
-			// Add the size of the key (an Integer object)
-			size += getObjectSize(entry.getKey());
-
-			// Add the size of the value (an ArrayList object)
-			size += getObjectSize(entry.getValue());
-
-			// Add the size of each element in the ArrayList (a Holder object)
-			for (holder holder : entry.getValue()) {
-				size += getObjectSize(holder);
-			}
-		}
-
-		return size;
-	}
-
-	public static long getObjectSize(Object object) {
-		if (instrumentation == null) {
-			throw new IllegalStateException("Instrumentation is not initialized");
-		}
-		return instrumentation.getObjectSize(object);
-	}
-
+	
 //To compare the Distances
 //	static class NodeDistance implements Comparable<NodeDistance> {
 //		int nodeId;

@@ -262,10 +262,10 @@ public class DistributedINE {
 //				x -> System.out.println(x.getEdgeId() + " src: " + x.getStartNodeId() + " dest: " + x.getEndNodeId()));
 //		System.out.println(stringBoundaryVertices);
 
-		System.out.println(
-				"The size of boundary vertices for " + CustomPartitionSize + " is : " + boundaryVerticesList.size());
-		System.out.println(
-				"The size of the connecting edges for " + CustomPartitionSize + " is : " + BoundaryEdgeId.size());
+	//	System.out.println(
+	//			"The size of boundary vertices for " + CustomPartitionSize + " is : " + boundaryVerticesList.size());
+	//	System.out.println(
+	//			"The size of the connecting edges for " + CustomPartitionSize + " is : " + BoundaryEdgeId.size());
 
 		/**
 		 * |Partition_Index|Source_vertex|Destination_vertex|Edge_Length|ArrayList<Road_Object>|
