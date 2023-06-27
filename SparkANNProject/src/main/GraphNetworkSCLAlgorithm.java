@@ -373,7 +373,7 @@ public class GraphNetworkSCLAlgorithm {
 		// "4g").set("spark.cores.max", "8");
 
 		SparkConf config = new SparkConf().setAppName("ANN-SCL-FIN").set("spark.submit.deployMode", "cluster")
-				.setMaster("yarn-cluster").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
+				.setMaster("yarn").set("spark.driver.maxResultSize", "4g").set("spark.executor.memory", "4g")
 				.set("spark.cores.max", "8");
 
 		JavaSparkContext jscontext = new JavaSparkContext(config);
